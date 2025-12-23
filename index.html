@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Adding — Web Prototype</title>
+
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#121a24;
+      --line:#22324a;
+      --text:#eaf0ff;
+      --muted:#b6c2e3;
+      --good:#2ee59d;
+      --bad:#ff5c7a;
+      --warn:#ffd166;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:16px;
+      display:grid;
+      gap:14px;
+      grid-template-columns: 1.35fr 0.65fr;
+    }
+    @media (max-width: 980px){
+      .wrap{grid-template-columns:1fr}
+    }
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    h1{margin:0 0 6px;font-size:26px}
+    .sub{margin:0;color:var(--muted);font-size:14px}
+
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    button, select{
+      border:1px solid var(--line);
+      background:#0f1620;
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    button:disabled{opacity:.55;cursor:not-allowed}
+
+    .pill{
+      border:1px solid var(--line);
+      padding:8px 10px;
+      border-radius:999px;
+      color:var(--muted);
+      background:#0f1620;
+      font-weight:800;
+    }
+    .pill strong{color:var(--text)}
+
+    .boardTop{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      margin-top:10px;
+    }
+
+    .circleWrap{
+      position:relative;
+      width:min(780px, 92vw);
+      height:min(780px, 92vw);
+      margin: 14px auto 0;
+    }
+    .circle{
+      position:absolute;
+      inset:0;
+      border-radius:50%;
+      border:2px dashed rgba(182,194,227,.35);
+    }
+
+    /* ring is always clickable and on top */
+    #ring{
+      position:absolute;
+      inset:0;
+      z-index: 10;
+      pointer-events:auto;
+    }
+
+    /* center NEVER blocks clicks */
+    .centerZone{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      width:42%;
+      min-width:240px;
+      max-width:420px;
+      background: rgba(18,26,36,.85);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:12px;
+      backdrop-filter: blur(4px);
+      z-index: 2;
+      pointer-events:none;
+    }
+    .centerTitle{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .centerCards{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      min-height:74px;
+      align-items:flex-start;
+      justify-content:center;
+    }
+
+    .card{
+      width:58px;
+      height:80px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:#0f1620;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      user-select:none;
+      box-shadow: 0 10px 20px rgba(0,0,0,.35);
+      position:relative;
+    }
+    .card.faceUp{background:#162131;border-color: rgba(234,240,255,.18);}
+    .card.small{width:54px;height:74px}
+    .card .mini{position:absolute;left:8px;top:6px;font-size:12px;color:var(--muted);font-weight:900;}
+    .card .big{font-size:18px;}
+    .card.joker{
+      border-color: rgba(255,209,102,.45);
+      outline:2px solid rgba(255,209,102,.18);
+    }
+
+    .ringCard{
+      position:absolute;
+      left:50%;
+      top:50%;
+      z-index: 11;
+      pointer-events:auto;
+    }
+    .ringBtn{
+      all:unset;
+      display:block;
+      cursor:pointer;
+      pointer-events:auto;
+    }
+    .ringBtn:disabled{opacity:.55;cursor:not-allowed}
+
+    .players{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+    }
+    .playerBox{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px;
+      background:#0f1620;
+    }
+    .badge{
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:900;
+      background:#121a24;
+      border:1px solid var(--line);
+      color:var(--muted);
+      display:inline-block;
+    }
+    .badge.active{
+      color:var(--text);
+      border-color: rgba(46,229,157,.35);
+      box-shadow: 0 0 0 2px rgba(46,229,157,.12);
+    }
+    .pile{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      margin-top:10px;
+      min-height:54px;
+    }
+    .log{
+      max-height: 340px;
+      overflow:auto;
+      margin-top:10px;
+      border-top:1px solid rgba(255,255,255,.06);
+      padding-top:10px;
+    }
+    .log p{margin:8px 0;font-size:13px;color:var(--muted);}
+    .log b{color:var(--text)}
+    .divider{height:1px;background:rgba(255,255,255,.06);margin:12px 0;}
+    .debug{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+      word-break:break-word;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <h1>Adding (Prototype)</h1>
+      <p class="sub">Setup: click 4 circle cards into the center. Play: click circle cards to draw. Match = collect + go again. Miss = center + pass. Joker sweeps center + other piles.</p>
+
+      <div class="boardTop">
+        <div class="row">
+          <label class="pill">Players:
+            <select id="playerCount">
+              <option value="2" selected>2</option>
+              <option value="4">4</option>
+            </select>
+          </label>
+          <button id="btnNew">New Game</button>
+          <button id="btnRestart" disabled>Restart</button>
+        </div>
+
+        <div class="row">
+          <div class="pill">Phase: <strong id="phaseText">—</strong></div>
+          <div class="pill">Turn: <strong id="turnText">—</strong></div>
+          <div class="pill">Circle left: <strong id="circleLeft">—</strong></div>
+        </div>
+      </div>
+
+      <div class="circleWrap">
+        <div class="circle"></div>
+
+        <div class="centerZone">
+          <div class="centerTitle">
+            <div class="pill">Center: <strong id="centerCount">0</strong></div>
+            <div class="pill">Last: <strong id="lastDraw">—</strong></div>
+          </div>
+          <div class="centerCards" id="centerCards"></div>
+        </div>
+
+        <div id="ring"></div>
+      </div>
+
+      <div class="debug" id="debug">Debug: —</div>
+    </div>
+
+    <div class="panel">
+      <div class="pill">Players & Points</div>
+      <div class="players" id="players"></div>
+
+      <div class="divider"></div>
+
+      <div class="row" style="justify-content:space-between">
+        <div class="pill">Log</div>
+        <button id="btnClearLog">Clear</button>
+      </div>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const SUITS = ["♣","♦","♥","♠"];
+  const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+  const FACE = new Set(["J","Q","K"]);
+
+  const elPlayerCount = document.getElementById("playerCount");
+  const btnNew = document.getElementById("btnNew");
+  const btnRestart = document.getElementById("btnRestart");
+  const btnClearLog = document.getElementById("btnClearLog");
+
+  const phaseText = document.getElementById("phaseText");
+  const turnText = document.getElementById("turnText");
+  const circleLeft = document.getElementById("circleLeft");
+  const centerCards = document.getElementById("centerCards");
+  const centerCount = document.getElementById("centerCount");
+  const lastDraw = document.getElementById("lastDraw");
+  const ring = document.getElementById("ring");
+  const playersEl = document.getElementById("players");
+  const logEl = document.getElementById("log");
+  const debugEl = document.getElementById("debug");
+
+  const state = {
+    phase: "idle",      // idle | setup | play | ended
+    playerCount: 2,
+    turn: 0,
+    circle: [],         // { card, taken }
+    center: [],         // cards face up
+    piles: [],          // array of arrays
+    last: null,
+    setupCounts: null,  // per player
+  };
+
+  function log(msg){
+    const p = document.createElement("p");
+    p.innerHTML = msg;
+    logEl.prepend(p);
+  }
+  function clearLog(){ logEl.innerHTML = ""; }
+
+  function shuffle(a){
+    for (let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  function makeDeck(){
+    const deck = [];
+    for (let d=0; d<2; d++){
+      for (const s of SUITS){
+        for (const r of RANKS){
+          deck.push({rank:r, suit:s, joker:false});
+        }
+      }
+    }
+    deck.push({joker:true});
+    deck.push({joker:true});
+    return shuffle(deck);
+  }
+
+  function label(c){
+    return c.joker ? "JOKER" : `${c.rank}${c.suit}`;
+  }
+
+  function scoreCard(c){
+    if (c.joker) return 1;
+    if (FACE.has(c.rank)) return 10;
+    return 1;
+  }
+
+  function pointsForPlayer(i){
+    return (state.piles[i]||[]).reduce((sum,c)=>sum+scoreCard(c),0);
+  }
+
+  function perPlayerSetupPicks(){
+    return state.playerCount === 2 ? 2 : 1;
+  }
+
+  function newGame(){
+    state.playerCount = Number(elPlayerCount.value);
+    state.phase = "setup";
+    state.turn = 0;
+    state.center = [];
+    state.piles = Array.from({length: state.playerCount}, ()=>[]);
+    state.last = null;
+    state.setupCounts = Array.from({length: state.playerCount}, ()=>0);
+    state.circle = makeDeck().map(card => ({card, taken:false}));
+
+    clearLog();
+    log(`<b>New Game</b> — ${state.playerCount} players. Setup: each player selects ${perPlayerSetupPicks()} card(s) to center (total 4).`);
+    render();
+  }
+
+  function restart(){
+    state.phase = "setup";
+    state.turn = 0;
+    state.center = [];
+    state.piles = Array.from({length: state.playerCount}, ()=>[]);
+    state.last = null;
+    state.setupCounts = Array.from({length: state.playerCount}, ()=>0);
+    state.circle = makeDeck().map(card => ({card, taken:false}));
+
+    clearLog();
+    log(`<b>Restart</b> — ${state.playerCount} players.`);
+    render();
+  }
+
+  function onRingClick(index){
+    const slot = state.circle[index];
+    if (!slot || slot.taken) return;
+
+    if (state.phase === "setup"){
+      const per = perPlayerSetupPicks();
+      if (state.setupCounts[state.turn] >= per){
+        state.turn = (state.turn + 1) % state.playerCount;
+        render();
+        return;
+      }
+
+      slot.taken = true;
+      state.center.push(slot.card);
+      state.setupCounts[state.turn] += 1;
+
+      log(`<b>P${state.turn+1}</b> placed a setup card to center. Center: <b>${state.center.length}</b>/4`);
+
+      if (state.setupCounts[state.turn] >= per){
+        state.turn = (state.turn + 1) % state.playerCount;
+      }
+      if (state.center.length >= 4){
+        state.phase = "play";
+        state.turn = 0;
+        state.setupCounts = null;
+        log(`<b>Setup complete.</b> Player 1 starts.`);
+      }
+      render();
+      return;
+    }
+
+    if (state.phase !== "play") return;
+
+    // DRAW
+    slot.taken = true;
+    const drawn = slot.card;
+    state.last = drawn;
+
+    // JOKER SWEEP
+    if (drawn.joker){
+      log(`<b>P${state.turn+1}</b> drew <b>JOKER</b> 🃏 — sweeps center + all other players’ piles!`);
+      state.piles[state.turn].push(drawn, ...state.center);
+      state.center = [];
+      for (let p=0;p<state.playerCount;p++){
+        if (p===state.turn) continue;
+        state.piles[state.turn].push(...state.piles[p]);
+        state.piles[p] = [];
+      }
+      checkEnd();
+      render();
+      return;
+    }
+
+    // MATCH (same rank vs center)
+    const matchIdx = state.center.findIndex(c => !c.joker && c.rank === drawn.rank);
+    if (matchIdx >= 0){
+      const matched = state.center.splice(matchIdx,1)[0];
+      state.piles[state.turn].push(drawn, matched);
+      log(`<b>P${state.turn+1}</b> drew <b>${label(drawn)}</b> and matched <b>${label(matched)}</b> — collected & goes again.`);
+      checkEnd();
+      render();
+      return;
+    }
+
+    // MISS
+    state.center.push(drawn);
+    log(`<b>P${state.turn+1}</b> drew <b>${label(drawn)}</b> — miss, placed in center. Turn passes.`);
+    state.turn = (state.turn + 1) % state.playerCount;
+    checkEnd();
+    render();
+  }
+
+  function checkEnd(){
+    const left = state.circle.filter(x=>!x.taken).length;
+    if (left === 0){
+      state.phase = "ended";
+      let best = -1, winners = [];
+      for (let i=0;i<state.playerCount;i++){
+        const pts = pointsForPlayer(i);
+        if (pts > best){ best = pts; winners=[i]; }
+        else if (pts === best){ winners.push(i); }
+      }
+      if (winners.length === 1){
+        log(`<b>Game Over.</b> Winner: <b>P${winners[0]+1}</b> with <b>${best}</b> points.`);
+      } else {
+        log(`<b>Game Over.</b> Tie at <b>${best}</b> points: ${winners.map(i=>`<b>P${i+1}</b>`).join(", ")}.`);
+      }
+    }
+  }
+
+  function render(){
+    phaseText.textContent = state.phase;
+    turnText.textContent = (state.phase==="setup"||state.phase==="play") ? `P${state.turn+1}` : "—";
+    circleLeft.textContent = state.phase==="idle" ? "—" : String(state.circle.filter(x=>!x.taken).length);
+
+    centerCount.textContent = String(state.center.length);
+    lastDraw.textContent = state.last ? label(state.last) : "—";
+
+    // center cards
+    centerCards.innerHTML = "";
+    for (const c of state.center){
+      const div = document.createElement("div");
+      div.className = "card small faceUp" + (c.joker ? " joker" : "");
+      div.innerHTML = `<div class="mini">${c.joker ? "JOKER" : c.suit}</div><div class="big">${c.joker ? "🃏" : c.rank}</div>`;
+      centerCards.appendChild(div);
+    }
+
+    // players
+    playersEl.innerHTML = "";
+    for (let i=0;i<state.playerCount;i++){
+      const box = document.createElement("div");
+      box.className = "playerBox";
+      const badge = document.createElement("div");
+      badge.className = "badge" + ((state.phase!=="ended" && state.phase!=="idle" && i===state.turn) ? " active" : "");
+      badge.textContent = `Player ${i+1}`;
+      const stats = document.createElement("div");
+      stats.className = "pill";
+      stats.innerHTML = `Cards: <strong>${state.piles[i].length}</strong> • Points: <strong>${pointsForPlayer(i)}</strong>`;
+      box.appendChild(badge);
+      box.appendChild(document.createElement("div")).style.height="8px";
+      box.appendChild(stats);
+
+      const pile = document.createElement("div");
+      pile.className="pile";
+      for (const c of state.piles[i].slice(-8)){
+        const div = document.createElement("div");
+        div.className = "card small faceUp" + (c.joker ? " joker" : "");
+        div.innerHTML = `<div class="mini">${c.joker ? "JOKER" : c.suit}</div><div class="big">${c.joker ? "🃏" : c.rank}</div>`;
+        pile.appendChild(div);
+      }
+      box.appendChild(pile);
+      playersEl.appendChild(box);
+    }
+
+    // ring
+    ring.innerHTML = "";
+    if (state.phase === "idle") {
+      debugEl.textContent = "Debug: idle";
+      btnRestart.disabled = true;
+      return;
+    }
+    btnRestart.disabled = false;
+
+    const total = state.circle.length;
+    const radius = Math.min(350, (document.querySelector(".circleWrap").clientWidth / 2) - 54);
+
+    for (let i=0;i<total;i++){
+      const slot = state.circle[i];
+      if (slot.taken) continue;
+
+      const angle = (i / total) * Math.PI * 2;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius;
+
+      const holder = document.createElement("div");
+      holder.className = "ringCard";
+      holder.style.transform = `translate(-50%,-50%) translate(${x}px,${y}px)`;
+
+      const btn = document.createElement("button");
+      btn.className = "ringBtn";
+      btn.disabled = (state.phase === "ended");
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        onRingClick(i);
+      });
+
+      const card = document.createElement("div");
+      card.className = "card small";
+      card.innerHTML = `<div class="mini">ADD</div><div class="big">★</div>`;
+
+      btn.appendChild(card);
+      holder.appendChild(btn);
+      ring.appendChild(holder);
+    }
+
+    debugEl.textContent =
+      `Debug: phase=${state.phase}, turn=P${state.turn+1}, center=${state.center.length}, circleLeft=${state.circle.filter(x=>!x.taken).length}`;
+  }
+
+  // events
+  btnNew.addEventListener("click", newGame);
+  btnRestart.addEventListener("click", restart);
+  btnClearLog.addEventListener("click", clearLog);
+
+  render();
+})();
+</script>
+</body>
+</html>
