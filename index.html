@@ -1,574 +1,508 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Adding — Web Prototype</title>
-
-  <style>
-    :root{
-      --bg:#0b0f14;
-      --panel:#121a24;
-      --line:#22324a;
-      --text:#eaf0ff;
-      --muted:#b6c2e3;
-      --good:#2ee59d;
-      --bad:#ff5c7a;
-      --warn:#ffd166;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:var(--bg);
-      color:var(--text);
-    }
-    .wrap{
-      max-width:1200px;
-      margin:0 auto;
-      padding:16px;
-      display:grid;
-      gap:14px;
-      grid-template-columns: 1.35fr 0.65fr;
-    }
-    @media (max-width: 980px){
-      .wrap{grid-template-columns:1fr}
-    }
-    .panel{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
-    }
-    h1{margin:0 0 6px;font-size:26px}
-    .sub{margin:0;color:var(--muted);font-size:14px}
-
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    button, select{
-      border:1px solid var(--line);
-      background:#0f1620;
-      color:var(--text);
-      padding:10px 12px;
-      border-radius:12px;
-      font-weight:800;
-      cursor:pointer;
-    }
-    button:disabled{opacity:.55;cursor:not-allowed}
-
-    .pill{
-      border:1px solid var(--line);
-      padding:8px 10px;
-      border-radius:999px;
-      color:var(--muted);
-      background:#0f1620;
-      font-weight:800;
-    }
-    .pill strong{color:var(--text)}
-
-    .boardTop{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:10px;
-    }
-
-    .circleWrap{
-      position:relative;
-      width:min(780px, 92vw);
-      height:min(780px, 92vw);
-      margin: 14px auto 0;
-    }
-    .circle{
-      position:absolute;
-      inset:0;
-      border-radius:50%;
-      border:2px dashed rgba(182,194,227,.35);
-    }
-
-    /* ring is always clickable and on top */
-    #ring{
-      position:absolute;
-      inset:0;
-      z-index: 10;
-      pointer-events:auto;
-    }
-
-    /* center NEVER blocks clicks */
-    .centerZone{
-      position:absolute;
-      left:50%;
-      top:50%;
-      transform:translate(-50%,-50%);
-      width:42%;
-      min-width:240px;
-      max-width:420px;
-      background: rgba(18,26,36,.85);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:12px;
-      backdrop-filter: blur(4px);
-      z-index: 2;
-      pointer-events:none;
-    }
-    .centerTitle{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:8px;
-    }
-    .centerCards{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      min-height:74px;
-      align-items:flex-start;
-      justify-content:center;
-    }
-
-    .card{
-      width:58px;
-      height:80px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background:#0f1620;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:900;
-      user-select:none;
-      box-shadow: 0 10px 20px rgba(0,0,0,.35);
-      position:relative;
-    }
-    .card.faceUp{background:#162131;border-color: rgba(234,240,255,.18);}
-    .card.small{width:54px;height:74px}
-    .card .mini{position:absolute;left:8px;top:6px;font-size:12px;color:var(--muted);font-weight:900;}
-    .card .big{font-size:18px;}
-    .card.joker{
-      border-color: rgba(255,209,102,.45);
-      outline:2px solid rgba(255,209,102,.18);
-    }
-
-    .ringCard{
-      position:absolute;
-      left:50%;
-      top:50%;
-      z-index: 11;
-      pointer-events:auto;
-    }
-    .ringBtn{
-      all:unset;
-      display:block;
-      cursor:pointer;
-      pointer-events:auto;
-    }
-    .ringBtn:disabled{opacity:.55;cursor:not-allowed}
-
-    .players{
-      display:grid;
-      gap:10px;
-      margin-top:10px;
-    }
-    .playerBox{
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:10px;
-      background:#0f1620;
-    }
-    .badge{
-      padding:6px 10px;
-      border-radius:999px;
-      font-weight:900;
-      background:#121a24;
-      border:1px solid var(--line);
-      color:var(--muted);
-      display:inline-block;
-    }
-    .badge.active{
-      color:var(--text);
-      border-color: rgba(46,229,157,.35);
-      box-shadow: 0 0 0 2px rgba(46,229,157,.12);
-    }
-    .pile{
-      display:flex;
-      gap:6px;
-      flex-wrap:wrap;
-      margin-top:10px;
-      min-height:54px;
-    }
-    .log{
-      max-height: 340px;
-      overflow:auto;
-      margin-top:10px;
-      border-top:1px solid rgba(255,255,255,.06);
-      padding-top:10px;
-    }
-    .log p{margin:8px 0;font-size:13px;color:var(--muted);}
-    .log b{color:var(--text)}
-    .divider{height:1px;background:rgba(255,255,255,.06);margin:12px 0;}
-    .debug{
-      margin-top:10px;
-      font-size:12px;
-      color:var(--muted);
-      word-break:break-word;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="wrap">
-    <div class="panel">
-      <h1>Adding (Prototype)</h1>
-      <p class="sub">Setup: click 4 circle cards into the center. Play: click circle cards to draw. Match = collect + go again. Miss = center + pass. Joker sweeps center + other piles.</p>
-
-      <div class="boardTop">
-        <div class="row">
-          <label class="pill">Players:
-            <select id="playerCount">
-              <option value="2" selected>2</option>
-              <option value="4">4</option>
-            </select>
-          </label>
-          <button id="btnNew">New Game</button>
-          <button id="btnRestart" disabled>Restart</button>
-        </div>
-
-        <div class="row">
-          <div class="pill">Phase: <strong id="phaseText">—</strong></div>
-          <div class="pill">Turn: <strong id="turnText">—</strong></div>
-          <div class="pill">Circle left: <strong id="circleLeft">—</strong></div>
-        </div>
-      </div>
-
-      <div class="circleWrap">
-        <div class="circle"></div>
-
-        <div class="centerZone">
-          <div class="centerTitle">
-            <div class="pill">Center: <strong id="centerCount">0</strong></div>
-            <div class="pill">Last: <strong id="lastDraw">—</strong></div>
-          </div>
-          <div class="centerCards" id="centerCards"></div>
-        </div>
-
-        <div id="ring"></div>
-      </div>
-
-      <div class="debug" id="debug">Debug: —</div>
-    </div>
-
-    <div class="panel">
-      <div class="pill">Players & Points</div>
-      <div class="players" id="players"></div>
-
-      <div class="divider"></div>
-
-      <div class="row" style="justify-content:space-between">
-        <div class="pill">Log</div>
-        <button id="btnClearLog">Clear</button>
-      </div>
-      <div class="log" id="log"></div>
-    </div>
-  </div>
-
 <script>
-(() => {
-  const SUITS = ["♣","♦","♥","♠"];
-  const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
-  const FACE = new Set(["J","Q","K"]);
+  const N_PLAYERS = 3;
+  const SETUP_MIDDLE_TARGET = 3;
 
-  const elPlayerCount = document.getElementById("playerCount");
-  const btnNew = document.getElementById("btnNew");
-  const btnRestart = document.getElementById("btnRestart");
-  const btnClearLog = document.getElementById("btnClearLog");
-
-  const phaseText = document.getElementById("phaseText");
-  const turnText = document.getElementById("turnText");
-  const circleLeft = document.getElementById("circleLeft");
-  const centerCards = document.getElementById("centerCards");
-  const centerCount = document.getElementById("centerCount");
-  const lastDraw = document.getElementById("lastDraw");
-  const ring = document.getElementById("ring");
-  const playersEl = document.getElementById("players");
-  const logEl = document.getElementById("log");
-  const debugEl = document.getElementById("debug");
-
-  const state = {
-    phase: "idle",      // idle | setup | play | ended
-    playerCount: 2,
-    turn: 0,
-    circle: [],         // { card, taken }
-    center: [],         // cards face up
-    piles: [],          // array of arrays
-    last: null,
-    setupCounts: null,  // per player
+  const els = {
+    turnTitle: document.getElementById('turnTitle'),
+    phasePill: document.getElementById('phasePill'),
+    deckPill: document.getElementById('deckPill'),
+    circle: document.getElementById('circle'),
+    picked: document.getElementById('picked'),
+    middle: document.getElementById('middle'),
+    help: document.getElementById('help'),
+    startGame: document.getElementById('startGame'),
+    clearSel: document.getElementById('clearSel'),
+    endTurn: document.getElementById('endTurn'),
+    newGame: document.getElementById('newGame'),
+    players: document.getElementById('players'),
+    log: document.getElementById('log'),
   };
 
   function log(msg){
-    const p = document.createElement("p");
-    p.innerHTML = msg;
-    logEl.prepend(p);
+    const div = document.createElement('div');
+    div.className = 'item';
+    div.textContent = msg;
+    els.log.prepend(div);
   }
-  function clearLog(){ logEl.innerHTML = ""; }
+  function setHelp(msg, type){
+    els.help.classList.remove('good','bad');
+    if(type) els.help.classList.add(type);
+    els.help.textContent = msg;
+  }
 
+  function cardLabel(c){
+    if(c.rank === 'JK') return 'JOKER';
+    return String(c.rank);
+  }
+
+  // ADD uses numbers only; face cards and jokers cannot be used for ADD
+  function cardAddValue(c){
+    if(c.rank === 'JK') return null;
+    if(c.rank === 'J' || c.rank === 'Q' || c.rank === 'K') return null;
+    return c.rank; // 1..10
+  }
+
+  function buildDeck(){
+    const d = [];
+    for(let r=1;r<=10;r++) for(let i=0;i<4;i++) d.push({rank:r});
+    for(const r of ['J','Q','K']) for(let i=0;i<4;i++) d.push({rank:r});
+    d.push({rank:'JK'}); d.push({rank:'JK'});
+    shuffle(d);
+    return d;
+  }
   function shuffle(a){
-    for (let i=a.length-1;i>0;i--){
+    for(let i=a.length-1;i>0;i--){
       const j = Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
+      [a[i],a[j]] = [a[j],a[i]];
     }
-    return a;
   }
 
-  function makeDeck(){
-    const deck = [];
-    for (let d=0; d<2; d++){
-      for (const s of SUITS){
-        for (const r of RANKS){
-          deck.push({rank:r, suit:s, joker:false});
-        }
+  let deck = [];
+  let middle = [];
+  let picked = null;
+
+  // NEW: pickedCollectedOnce lets the same picked card keep capturing multiple times,
+  // but the picked card itself is only collected once.
+  let pickedCollectedOnce = false;
+
+  let selectedIdxs = [];
+
+  let players = [];
+  let turn = 0;
+  let phase = 'waiting'; // waiting | setup | main | finished
+  let setupPlaced = 0;
+
+  function initPlayers(){
+    players = [];
+    for(let i=0;i<N_PLAYERS;i++) players.push({ name:`Player ${i+1}`, pile:[] });
+  }
+
+  function enableCircle(enabled){
+    els.circle.classList.toggle('disabled', !enabled);
+  }
+
+  function renderTop(){
+    els.turnTitle.textContent = `Turn: ${players[turn].name}`;
+    els.phasePill.textContent = `Phase: ${phase[0].toUpperCase()+phase.slice(1)}`;
+    els.deckPill.textContent = `Circle: ${deck.length}`;
+  }
+
+  function renderPlayers(){
+    els.players.innerHTML = '';
+    players.forEach((p,i)=>{
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerHTML = `
+        <div class="k">${p.name}${i===turn ? ' (turn)' : ''}</div>
+        <div class="v">Cards collected: ${p.pile.length}</div>
+        <div class="k">End score is calculated when game ends</div>
+      `;
+      els.players.appendChild(div);
+    });
+  }
+
+  function renderPicked(){
+    const mini1 = els.picked.querySelector('.mini');
+    const big = els.picked.querySelector('.big');
+    const mini2 = els.picked.querySelector('.mini.br');
+    if(!picked){
+      mini1.textContent='—'; big.textContent='—'; mini2.textContent='—';
+      els.picked.classList.remove('sel');
+    } else {
+      const lbl = cardLabel(picked);
+      mini1.textContent = lbl;
+      big.textContent = (lbl==='JOKER') ? '🃏' : lbl;
+      mini2.textContent = lbl;
+      // If picked is still active, highlight it slightly
+      if(pickedCollectedOnce) els.picked.classList.add('sel');
+      else els.picked.classList.remove('sel');
+    }
+  }
+
+  function renderMiddle(){
+    els.middle.innerHTML = '';
+    middle.forEach((c,idx)=>{
+      const el = document.createElement('div');
+      el.className = 'card';
+      if(selectedIdxs.includes(idx)) el.classList.add('sel');
+      const lbl = cardLabel(c);
+      el.innerHTML = `
+        <div class="mini">${lbl}</div>
+        <div class="big">${lbl==='JOKER'?'🃏':lbl}</div>
+        <div class="mini br">${lbl}</div>
+      `;
+      el.addEventListener('click', ()=>onMiddleClick(idx));
+      els.middle.appendChild(el);
+    });
+  }
+
+  function clearSelection(){
+    selectedIdxs = [];
+    renderMiddle();
+  }
+
+  function nextTurn(){
+    turn = (turn + 1) % N_PLAYERS;
+    picked = null;
+    pickedCollectedOnce = false;
+    clearSelection();
+    renderTop(); renderPlayers(); renderPicked();
+
+    if(phase === 'setup'){
+      setHelp(`${players[turn].name}: click the Circle to place 1 card into the Middle (no Jokers in setup).`, null);
+    } else if(phase === 'main'){
+      setHelp(`${players[turn].name}: click the Circle to pick a card.`, null);
+    }
+  }
+
+  // Can any capture still be done with current picked (used after each capture)
+  function hasAnyCaptureWithCurrentPicked(){
+    if(!picked) return false;
+    if(picked.rank === 'JK') return true;
+
+    // MATCH
+    if(middle.some(m => cardLabel(m) === cardLabel(picked))) return true;
+
+    // ADD only if picked is number
+    const target = cardAddValue(picked);
+    if(target == null) return false;
+
+    for(let i=0;i<middle.length;i++){
+      for(let j=i+1;j<middle.length;j++){
+        const a = cardAddValue(middle[i]);
+        const b = cardAddValue(middle[j]);
+        if(a == null || b == null) continue;
+        if(a + b === target) return true;
       }
     }
-    deck.push({joker:true});
-    deck.push({joker:true});
-    return shuffle(deck);
+    return false;
   }
 
-  function label(c){
-    return c.joker ? "JOKER" : `${c.rank}${c.suit}`;
+  function ensurePickedCollectedOnce(){
+    if(!pickedCollectedOnce){
+      players[turn].pile.push(picked);
+      pickedCollectedOnce = true;
+      renderPlayers();
+      renderPicked();
+    }
   }
 
-  function scoreCard(c){
-    if (c.joker) return 1;
-    if (FACE.has(c.rank)) return 10;
-    return 1;
+  function handleJokerPickup(wasLastPick){
+    const picker = players[turn];
+
+    players.forEach((p,i)=>{
+      if(i!==turn && p.pile.length){
+        picker.pile.push(...p.pile);
+        p.pile = [];
+      }
+    });
+
+    if(middle.length){
+      picker.pile.push(...middle);
+      middle = [];
+    }
+
+    picker.pile.push(picked);
+
+    log(`${picker.name} picked a JOKER! Collected everyone’s cards + all Middle cards.`);
+    setHelp(`🃏 JOKER! ${picker.name} collected everyone’s cards + the Middle. Pick again.`, 'good');
+
+    picked = null;
+    pickedCollectedOnce = false;
+    clearSelection();
+    renderPlayers(); renderMiddle(); renderPicked(); renderTop();
+
+    if(wasLastPick) endGame(turn);
   }
 
-  function pointsForPlayer(i){
-    return (state.piles[i]||[]).reduce((sum,c)=>sum+scoreCard(c),0);
+  function scorePile(pile){
+    let pts = 0;
+    for(const c of pile){
+      if(c.rank === 'JK') pts += 1;
+      else if(c.rank === 'J' || c.rank === 'Q' || c.rank === 'K') pts += 10;
+      else pts += 1;
+    }
+    return pts;
   }
 
-  function perPlayerSetupPicks(){
-    return state.playerCount === 2 ? 2 : 1;
+  function endGame(lastPickerIndex){
+    const lastPicker = players[lastPickerIndex];
+
+    if(middle.length){
+      lastPicker.pile.push(...middle);
+      log(`${lastPicker.name} picked the last Circle card and takes all remaining Middle cards (${middle.length}).`);
+      middle = [];
+    }
+
+    const scores = players.map(p=>scorePile(p.pile));
+    const max = Math.max(...scores);
+    const winners = players.map((p,i)=>({name:p.name, score:scores[i]})).filter(x=>x.score===max);
+
+    renderMiddle(); renderPlayers();
+    log(`GAME OVER — ${players.map((p,i)=>`${p.name}: ${scores[i]} pts`).join(' | ')}`);
+
+    if(winners.length===1) setHelp(`🏁 GAME OVER! Winner: ${winners[0].name} with ${winners[0].score} points.`, 'good');
+    else setHelp(`🏁 GAME OVER! Tie: ${winners.map(w=>w.name).join(', ')} with ${max} points.`, 'good');
+
+    phase = 'finished';
+    enableCircle(false);
+    renderTop();
   }
 
-  function newGame(){
-    state.playerCount = Number(elPlayerCount.value);
-    state.phase = "setup";
-    state.turn = 0;
-    state.center = [];
-    state.piles = Array.from({length: state.playerCount}, ()=>[]);
-    state.last = null;
-    state.setupCounts = Array.from({length: state.playerCount}, ()=>0);
-    state.circle = makeDeck().map(card => ({card, taken:false}));
-
-    clearLog();
-    log(`<b>New Game</b> — ${state.playerCount} players. Setup: each player selects ${perPlayerSetupPicks()} card(s) to center (total 4).`);
-    render();
+  function drawNonJokerForSetup(){
+    while(deck.length){
+      const c = deck.pop();
+      if(c.rank !== 'JK') return c;
+      deck.unshift(c);
+      shuffle(deck);
+      log('Setup draw hit a JOKER — put back and redrawn (Jokers not allowed in setup).');
+    }
+    return null;
   }
 
-  function restart(){
-    state.phase = "setup";
-    state.turn = 0;
-    state.center = [];
-    state.piles = Array.from({length: state.playerCount}, ()=>[]);
-    state.last = null;
-    state.setupCounts = Array.from({length: state.playerCount}, ()=>0);
-    state.circle = makeDeck().map(card => ({card, taken:false}));
+  function onCircleClick(){
+    if(phase==='waiting'){ setHelp('Click START GAME first.', 'bad'); return; }
+    if(phase==='finished'){ setHelp('Game is over. Click New Game to play again.', null); return; }
+    if(deck.length===0){ setHelp('Circle is empty.', 'bad'); return; }
 
-    clearLog();
-    log(`<b>Restart</b> — ${state.playerCount} players.`);
-    render();
+    // NEW: You cannot draw a new card while a picked card is still active.
+    if(phase==='main' && picked){
+      setHelp('Finish using your picked card first (match/add as much as you can), then click the picked card to move on.', 'bad');
+      return;
+    }
+
+    const currentPlayer = players[turn];
+
+    if(phase==='setup'){
+      const c = drawNonJokerForSetup();
+      if(!c){ setHelp('No cards left. Something went wrong.', 'bad'); return; }
+      middle.push(c);
+      setupPlaced++;
+      log(`${currentPlayer.name} placed ${cardLabel(c)} into the Middle (setup).`);
+      renderTop(); renderMiddle(); renderPlayers();
+
+      if(setupPlaced >= SETUP_MIDDLE_TARGET){
+        phase = 'main';
+        picked = null;
+        pickedCollectedOnce = false;
+        clearSelection();
+        renderTop();
+        setHelp(`Setup complete. ${players[turn].name}: click the Circle to pick a card.`, null);
+        log('Setup complete. Main phase begins.');
+        return;
+      }
+      nextTurn();
+      return;
+    }
+
+    // MAIN pick
+    const card = deck.pop();
+    const wasLastPick = (deck.length === 0);
+    picked = card;
+    pickedCollectedOnce = false;
+    renderPicked(); renderTop();
+
+    if(picked.rank === 'JK'){
+      handleJokerPickup(wasLastPick);
+      return;
+    }
+
+    // If no capture possible at all, picked goes to Middle and turn ends
+    if(!hasAnyCaptureWithCurrentPicked()){
+      middle.push(picked);
+      log(`${currentPlayer.name} picked ${cardLabel(picked)} — no add/match. Card goes to Middle. Turn ends.`);
+      setHelp(`❌ No add/match. Card goes to the Middle. Turn ends.`, 'bad');
+
+      picked = null;
+      pickedCollectedOnce = false;
+      clearSelection();
+      renderPicked(); renderMiddle(); renderPlayers(); renderTop();
+
+      if(wasLastPick){ endGame(turn); return; }
+      setTimeout(nextTurn, 350);
+      return;
+    }
+
+    // If capture is possible, keep picked active until player is done capturing
+    const pickedIsNumber = (cardAddValue(picked) != null);
+    setHelp(
+      pickedIsNumber
+        ? `Picked ${cardLabel(picked)}. You can MATCH (same) and/or ADD pairs. Capture as many as you can. Click the picked card when done.`
+        : `Picked ${cardLabel(picked)}. MATCH only. Capture as many matches as you can. Click the picked card when done.`,
+      null
+    );
+
+    if(wasLastPick){
+      log(`${currentPlayer.name} picked the LAST Circle card (${cardLabel(picked)}). Finish your captures; game will end after you're done.`);
+    }
   }
 
-  function onRingClick(index){
-    const slot = state.circle[index];
-    if (!slot || slot.taken) return;
+  // NEW: click picked card to finish this picked-card phase
+  function onPickedClick(){
+    if(phase !== 'main') return;
+    if(!picked) return;
 
-    if (state.phase === "setup"){
-      const per = perPlayerSetupPicks();
-      if (state.setupCounts[state.turn] >= per){
-        state.turn = (state.turn + 1) % state.playerCount;
-        render();
+    // If they never captured anything, they shouldn't be able to "finish" early
+    // because they must play if possible. But since we want teaching,
+    // we’ll allow finishing only if no more captures exist.
+    if(hasAnyCaptureWithCurrentPicked()){
+      setHelp('You still have a match/add available. In this game, if you miss it and move on, you can’t go back.', 'bad');
+      return;
+    }
+
+    // Done with this picked card: clear it and allow picking again.
+    picked = null;
+    pickedCollectedOnce = false;
+    clearSelection();
+    renderPicked(); renderMiddle(); renderPlayers(); renderTop();
+
+    // If deck ended earlier, end game now (last picker takes remaining middle)
+    if(deck.length === 0){
+      endGame(turn);
+      return;
+    }
+
+    setHelp(`${players[turn].name}: click the Circle to pick again.`, null);
+  }
+
+  function onMiddleClick(idx){
+    if(phase!=='main') return;
+    if(!picked){ setHelp('Pick a card from the Circle first.', 'bad'); return; }
+    if(picked.rank==='JK') return;
+
+    const pickedLbl = cardLabel(picked);
+
+    // If they click a matching card, capture it immediately (no selection needed)
+    const clicked = middle[idx];
+    if(cardLabel(clicked) === pickedLbl){
+      ensurePickedCollectedOnce();
+      players[turn].pile.push(clicked);
+
+      log(`${players[turn].name} MATCHED ${pickedLbl} and captured 1 Middle card (picked kept active).`);
+      setHelp(`✅ MATCH captured. Keep going — capture more with ${pickedLbl} if you can.`, 'good');
+
+      middle.splice(idx, 1);
+      clearSelection();
+      renderPlayers(); renderMiddle(); renderPicked(); renderTop();
+
+      if(!hasAnyCaptureWithCurrentPicked()){
+        setHelp(`No more captures for ${pickedLbl}. Click the picked card to move on.`, null);
+      }
+      return;
+    }
+
+    // Otherwise they are trying ADD: select up to 2 cards
+    if(selectedIdxs.includes(idx)) selectedIdxs = selectedIdxs.filter(x=>x!==idx);
+    else {
+      if(selectedIdxs.length>=2){ setHelp('Select at most 2 Middle cards for ADD.', 'bad'); return; }
+      selectedIdxs.push(idx);
+    }
+    renderMiddle();
+
+    if(selectedIdxs.length === 2){
+      const aCard = middle[selectedIdxs[0]];
+      const bCard = middle[selectedIdxs[1]];
+
+      const target = cardAddValue(picked);
+      const a = cardAddValue(aCard);
+      const b = cardAddValue(bCard);
+
+      if(target == null || a == null || b == null){
+        setHelp('❌ ADD uses NUMBER cards only (1–10). Clear selection and try again.', 'bad');
         return;
       }
 
-      slot.taken = true;
-      state.center.push(slot.card);
-      state.setupCounts[state.turn] += 1;
+      if(a + b === target){
+        ensurePickedCollectedOnce();
 
-      log(`<b>P${state.turn+1}</b> placed a setup card to center. Center: <b>${state.center.length}</b>/4`);
+        players[turn].pile.push(aCard, bCard);
+        log(`${players[turn].name} ADDED two cards to make ${cardLabel(picked)} and captured them (picked kept active).`);
+        setHelp('✅ ADD captured. Keep going — capture more pairs if you can.', 'good');
 
-      if (state.setupCounts[state.turn] >= per){
-        state.turn = (state.turn + 1) % state.playerCount;
+        const i1 = Math.max(selectedIdxs[0], selectedIdxs[1]);
+        const i2 = Math.min(selectedIdxs[0], selectedIdxs[1]);
+        middle.splice(i1, 1);
+        middle.splice(i2, 1);
+
+        selectedIdxs = [];
+        renderPlayers(); renderMiddle(); renderPicked(); renderTop();
+
+        if(!hasAnyCaptureWithCurrentPicked()){
+          setHelp(`No more captures for ${cardLabel(picked)}. Click the picked card to move on.`, null);
+        }
+        return;
       }
-      if (state.center.length >= 4){
-        state.phase = "play";
-        state.turn = 0;
-        state.setupCounts = null;
-        log(`<b>Setup complete.</b> Player 1 starts.`);
-      }
-      render();
+
+      setHelp('❌ Not a valid ADD. Clear selection and try again.', 'bad');
       return;
-    }
-
-    if (state.phase !== "play") return;
-
-    // DRAW
-    slot.taken = true;
-    const drawn = slot.card;
-    state.last = drawn;
-
-    // JOKER SWEEP
-    if (drawn.joker){
-      log(`<b>P${state.turn+1}</b> drew <b>JOKER</b> 🃏 — sweeps center + all other players’ piles!`);
-      state.piles[state.turn].push(drawn, ...state.center);
-      state.center = [];
-      for (let p=0;p<state.playerCount;p++){
-        if (p===state.turn) continue;
-        state.piles[state.turn].push(...state.piles[p]);
-        state.piles[p] = [];
-      }
-      checkEnd();
-      render();
-      return;
-    }
-
-    // MATCH (same rank vs center)
-    const matchIdx = state.center.findIndex(c => !c.joker && c.rank === drawn.rank);
-    if (matchIdx >= 0){
-      const matched = state.center.splice(matchIdx,1)[0];
-      state.piles[state.turn].push(drawn, matched);
-      log(`<b>P${state.turn+1}</b> drew <b>${label(drawn)}</b> and matched <b>${label(matched)}</b> — collected & goes again.`);
-      checkEnd();
-      render();
-      return;
-    }
-
-    // MISS
-    state.center.push(drawn);
-    log(`<b>P${state.turn+1}</b> drew <b>${label(drawn)}</b> — miss, placed in center. Turn passes.`);
-    state.turn = (state.turn + 1) % state.playerCount;
-    checkEnd();
-    render();
-  }
-
-  function checkEnd(){
-    const left = state.circle.filter(x=>!x.taken).length;
-    if (left === 0){
-      state.phase = "ended";
-      let best = -1, winners = [];
-      for (let i=0;i<state.playerCount;i++){
-        const pts = pointsForPlayer(i);
-        if (pts > best){ best = pts; winners=[i]; }
-        else if (pts === best){ winners.push(i); }
-      }
-      if (winners.length === 1){
-        log(`<b>Game Over.</b> Winner: <b>P${winners[0]+1}</b> with <b>${best}</b> points.`);
-      } else {
-        log(`<b>Game Over.</b> Tie at <b>${best}</b> points: ${winners.map(i=>`<b>P${i+1}</b>`).join(", ")}.`);
-      }
     }
   }
 
-  function render(){
-    phaseText.textContent = state.phase;
-    turnText.textContent = (state.phase==="setup"||state.phase==="play") ? `P${state.turn+1}` : "—";
-    circleLeft.textContent = state.phase==="idle" ? "—" : String(state.circle.filter(x=>!x.taken).length);
+  function onEndTurn(){
+    if(phase!=='main'){ setHelp('End Turn is only for the main phase.', null); return; }
+    if(phase==='finished') return;
 
-    centerCount.textContent = String(state.center.length);
-    lastDraw.textContent = state.last ? label(state.last) : "—";
-
-    // center cards
-    centerCards.innerHTML = "";
-    for (const c of state.center){
-      const div = document.createElement("div");
-      div.className = "card small faceUp" + (c.joker ? " joker" : "");
-      div.innerHTML = `<div class="mini">${c.joker ? "JOKER" : c.suit}</div><div class="big">${c.joker ? "🃏" : c.rank}</div>`;
-      centerCards.appendChild(div);
-    }
-
-    // players
-    playersEl.innerHTML = "";
-    for (let i=0;i<state.playerCount;i++){
-      const box = document.createElement("div");
-      box.className = "playerBox";
-      const badge = document.createElement("div");
-      badge.className = "badge" + ((state.phase!=="ended" && state.phase!=="idle" && i===state.turn) ? " active" : "");
-      badge.textContent = `Player ${i+1}`;
-      const stats = document.createElement("div");
-      stats.className = "pill";
-      stats.innerHTML = `Cards: <strong>${state.piles[i].length}</strong> • Points: <strong>${pointsForPlayer(i)}</strong>`;
-      box.appendChild(badge);
-      box.appendChild(document.createElement("div")).style.height="8px";
-      box.appendChild(stats);
-
-      const pile = document.createElement("div");
-      pile.className="pile";
-      for (const c of state.piles[i].slice(-8)){
-        const div = document.createElement("div");
-        div.className = "card small faceUp" + (c.joker ? " joker" : "");
-        div.innerHTML = `<div class="mini">${c.joker ? "JOKER" : c.suit}</div><div class="big">${c.joker ? "🃏" : c.rank}</div>`;
-        pile.appendChild(div);
-      }
-      box.appendChild(pile);
-      playersEl.appendChild(box);
-    }
-
-    // ring
-    ring.innerHTML = "";
-    if (state.phase === "idle") {
-      debugEl.textContent = "Debug: idle";
-      btnRestart.disabled = true;
+    // Can't end turn while picked still has a possible capture
+    if(picked && hasAnyCaptureWithCurrentPicked()){
+      setHelp("You still have an add/match available. If you miss it and end your turn, you can't go back — but you also can't end while a move exists.", 'bad');
       return;
     }
-    btnRestart.disabled = false;
 
-    const total = state.circle.length;
-    const radius = Math.min(350, (document.querySelector(".circleWrap").clientWidth / 2) - 54);
+    picked = null;
+    pickedCollectedOnce = false;
+    clearSelection();
+    renderPicked();
+    log(`${players[turn].name} ended their turn.`);
 
-    for (let i=0;i<total;i++){
-      const slot = state.circle[i];
-      if (slot.taken) continue;
+    if(deck.length===0){ endGame(turn); return; }
+    nextTurn();
+  }
 
-      const angle = (i / total) * Math.PI * 2;
-      const x = Math.cos(angle) * radius;
-      const y = Math.sin(angle) * radius;
+  function startGame(){
+    if(phase!=='waiting') return;
+    phase = 'setup';
+    setupPlaced = 0;
+    middle = [];
+    picked = null;
+    pickedCollectedOnce = false;
+    selectedIdxs = [];
 
-      const holder = document.createElement("div");
-      holder.className = "ringCard";
-      holder.style.transform = `translate(-50%,-50%) translate(${x}px,${y}px)`;
+    enableCircle(true);
+    renderTop(); renderPlayers(); renderPicked(); renderMiddle();
 
-      const btn = document.createElement("button");
-      btn.className = "ringBtn";
-      btn.disabled = (state.phase === "ended");
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        onRingClick(i);
-      });
+    setHelp(`${players[turn].name}: click the Circle to place 1 card into the Middle (no Jokers in setup).`, null);
+    log('START GAME pressed. Setup phase begins.');
+  }
 
-      const card = document.createElement("div");
-      card.className = "card small";
-      card.innerHTML = `<div class="mini">ADD</div><div class="big">★</div>`;
+  function newGame(){
+    deck = buildDeck();
+    middle = [];
+    picked = null;
+    pickedCollectedOnce = false;
+    selectedIdxs = [];
+    turn = 0;
+    phase = 'waiting';
+    setupPlaced = 0;
+    els.log.innerHTML = '';
 
-      btn.appendChild(card);
-      holder.appendChild(btn);
-      ring.appendChild(holder);
-    }
-
-    debugEl.textContent =
-      `Debug: phase=${state.phase}, turn=P${state.turn+1}, center=${state.center.length}, circleLeft=${state.circle.filter(x=>!x.taken).length}`;
+    initPlayers();
+    enableCircle(false);
+    renderTop(); renderPlayers(); renderPicked(); renderMiddle();
+    setHelp('Click START GAME to begin.', null);
+    log('New game loaded. Waiting to start.');
   }
 
   // events
-  btnNew.addEventListener("click", newGame);
-  btnRestart.addEventListener("click", restart);
-  btnClearLog.addEventListener("click", clearLog);
+  els.circle.addEventListener('click', onCircleClick);
+  els.picked.addEventListener('click', onPickedClick); // NEW
+  els.startGame.addEventListener('click', startGame);
+  els.clearSel.addEventListener('click', ()=>{ clearSelection(); setHelp('Selection cleared.', null); });
+  els.endTurn.addEventListener('click', onEndTurn);
+  els.newGame.addEventListener('click', newGame);
 
-  render();
-})();
+  // init
+  deck = buildDeck();
+  initPlayers();
+  enableCircle(false);
+  renderTop(); renderPlayers(); renderPicked(); renderMiddle();
 </script>
-</body>
-</html>

@@ -1,0 +1,109 @@
+🃏 INJERA BE WAT
+Add • Match • Think Fast
+🎯 OBJECTIVE
+
+Collect cards during the game.
+Points are counted only at the end.
+The player with the highest total points wins.
+
+🧩 SETUP
+
+Place all cards face down in the Circle (draw pile)
+
+Place several cards face up in the Middle
+
+Each player has a side area for collected cards
+
+There are 2 Jokers total in the game
+
+🔵 HOW TO PLAY (ON YOUR TURN)
+1️⃣ Pick a card
+
+Tap or click the Circle to pick up one card
+
+2️⃣ Use that card to capture
+
+You may capture cards from the Middle in either way:
+
+✅ MATCH
+
+Pick one middle card with the same number
+
+➕ ADD
+
+Pick two middle cards
+
+If their total equals the card you picked, you capture them
+
+📌 Important
+
+You must see the add or match yourself
+
+If you miss one and end your turn, you cannot go back
+
+3️⃣ Keep going or stop
+
+If you successfully capture:
+
+You pick again from the Circle
+
+Your turn continues
+
+If you cannot add or match:
+
+Your turn ends immediately
+
+Play moves to the next player
+
+🃏 JOKER RULE (VERY IMPORTANT)
+
+There are only 2 Jokers in the game.
+
+When a player picks a Joker from the Circle:
+
+They immediately collect:
+
+✅ All cards collected by every other player
+
+✅ All cards currently in the Middle
+
+❌ Cards still in the Circle stay there
+❌ Joker does not end the game automatically
+
+🧠 Joker is powerful, but timing matters.
+
+🛑 END OF THE GAME
+
+The game ends when the last card is picked from the Circle
+
+If there are cards left in the Middle at that moment:
+
+The player who picked the last Circle card collects them all
+
+Then, score the game.
+
+🧮 SCORING (END OF GAME ONLY)
+
+Count the cards each player collected:
+
+Number cards (1–10) → 1 point each
+
+Face cards (J, Q, K) → 10 points each
+
+Jokers → 1 point each
+
+🏆 The player with the most points wins
+
+⚠️ IMPORTANT RULES TO REMEMBER
+
+Side cards are locked unless taken by a Joker
+
+Only the Middle can be added or matched
+
+No helping, no reminders, no take-backs
+
+Miss it on your turn → it’s gone
+
+🧠 ONE-LINE SUMMARY (KID VERSION)
+
+“Pick from the circle, add or match from the middle, Jokers shake everything up, and the biggest score at the end wins.”
