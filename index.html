@@ -1,272 +1,1101 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Injera Be Wat — Prototype</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Injera Be Wat — Prototype</title>
 
-<style>
-  body{
-    margin:0;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    background:#0b0f14;
-    color:#eaf0ff;
-    padding:20px;
-  }
+  <style>
+    :root{
+      --bg:#071018;
+      --panel:rgba(10,18,30,.78);
+      --panel2:rgba(9,16,26,.60);
+      --border:rgba(255,255,255,.10);
+      --text:#eaf3ff;
+      --muted:#b9c7e8;
 
-  h1{margin:0 0 6px}
-  .sub{color:#b6c2e3;margin-bottom:16px}
+      /* Ethiopian holiday palette */
+      --eth-green:#0f7a3a;
+      --eth-yellow:#ffd166;
+      --eth-red:#d62828;
+      --eth-blue:#1d4ed8;
+      --gold:#f7d36a;
 
-  .board{
-    display:flex;
-    gap:24px;
-    flex-wrap:wrap;
-  }
+      --good:#7cffb2;
+      --bad:#ff6fb1;
+      --warn:#ffd166;
 
-  .left{
-    flex:1;
-    min-width:320px;
-  }
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --r: 18px;
+    }
 
-  .right{
-    width:300px;
-  }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 10% 10%, rgba(15,122,58,.22), transparent 60%),
+        radial-gradient(900px 600px at 90% 20%, rgba(214,40,40,.20), transparent 55%),
+        radial-gradient(900px 600px at 55% 90%, rgba(255,209,102,.18), transparent 60%),
+        linear-gradient(180deg, #06111a, #040810 55%, #02040a);
+      min-height:100vh;
+      padding:22px;
+    }
 
-  .zoneTitle{
-    font-weight:900;
-    margin:12px 0 8px;
-  }
+    .wrap{max-width:1200px;margin:0 auto;display:grid;gap:16px}
+    header{
+      padding:18px 20px;
+      border:1px solid var(--border);
+      border-radius:22px;
+      background:
+        radial-gradient(700px 200px at 20% 20%, rgba(29,78,216,.14), transparent 60%),
+        radial-gradient(700px 240px at 80% 20%, rgba(247,211,106,.10), transparent 60%),
+        linear-gradient(135deg, rgba(10,18,30,.88), rgba(6,12,20,.72));
+      box-shadow: var(--shadow);
+    }
+    h1{margin:0;font-size:44px;letter-spacing:.3px}
+    .sub{margin:6px 0 0;color:var(--muted);line-height:1.35}
 
-  .circleBtn{
-    width:140px;
-    height:190px;
-    border-radius:18px;
-    background:#1f2937;
-    display:grid;
-    place-items:center;
-    cursor:pointer;
-    font-weight:900;
-    letter-spacing:1px;
-    border:2px solid #334155;
-  }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.3fr .9fr;
+      gap:16px;
+      align-items:start;
+    }
 
-  .circleBtn.disabled{
-    opacity:.4;
-    cursor:not-allowed;
-  }
+    .panel{
+      border:1px solid var(--border);
+      border-radius: var(--r);
+      background: linear-gradient(135deg, var(--panel), var(--panel2));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panel .hd{
+      padding:14px 16px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .panel .bd{padding:16px}
 
-  .pickedSlot{
-    width:100px;
-    height:140px;
-    border:2px dashed #334155;
-    display:grid;
-    place-items:center;
-    margin-bottom:10px;
-  }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:var(--muted);
+      background: rgba(0,0,0,.18);
+      font-size:13px;
+      white-space:nowrap;
+    }
 
-  .row{
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-  }
+    .row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+    .row.center{align-items:center}
 
-  .card{
-    width:80px;
-    height:110px;
-    border-radius:12px;
-    background:#f9fafb;
-    color:#0b1220;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:900;
-    cursor:pointer;
-    box-shadow:0 6px 14px rgba(0,0,0,.4);
-  }
+    /* Ethiopian holiday “deck” / circle button */
+    .circleBtn{
+      width:160px;height:210px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.16);
+      position:relative;
+      overflow:hidden;
+      cursor:pointer;
+      box-shadow: 0 18px 50px rgba(0,0,0,.55);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.10), transparent 40%),
+        linear-gradient(90deg, rgba(15,122,58,.85), rgba(255,209,102,.85), rgba(214,40,40,.85));
+      transition: transform .12s ease;
+      user-select:none;
+    }
+    .circleBtn:before{
+      content:"";
+      position:absolute;inset:-40px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(247,211,106,.55), transparent 60%),
+        radial-gradient(circle at 70% 70%, rgba(29,78,216,.45), transparent 65%);
+      transform: rotate(12deg);
+      opacity:.85;
+    }
+    .circleBtn:after{
+      content:"";
+      position:absolute;inset:12px;
+      border-radius:18px;
+      border:2px solid rgba(255,255,255,.22);
+      box-shadow: inset 0 0 0 2px rgba(0,0,0,.15);
+    }
+    .circleBtn .label{
+      position:absolute;left:0;right:0;top:0;bottom:0;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      letter-spacing:1px;
+      font-size:24px;
+      text-transform:uppercase;
+      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+    }
+    .circleBtn .mini{
+      position:absolute;left:12px;top:12px;
+      padding:6px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.20);
+      font-size:12px;color:var(--muted);
+    }
+    .circleBtn.disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.2)}
+    .circleBtn:hover:not(.disabled){transform: translateY(-1px);}
 
-  .card.selected{
-    outline:4px solid #facc15;
-    transform:translateY(-2px);
-  }
+    /* Card UI */
+    .card{
+      width:96px;height:132px;
+      border-radius:16px;
+      position:relative;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 16px 40px rgba(0,0,0,.40);
+      overflow:hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.12), transparent 35%),
+        radial-gradient(120px 120px at 20% 20%, rgba(247,211,106,.35), transparent 60%),
+        radial-gradient(140px 140px at 80% 80%, rgba(29,78,216,.25), transparent 62%),
+        linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
+      color:#0a0f16;
+      user-select:none;
+    }
+    .card:before{
+      content:"";
+      position:absolute;left:0;top:0;right:0;height:18px;
+      background: linear-gradient(90deg, var(--eth-green), var(--eth-yellow), var(--eth-red));
+      opacity:.95;
+    }
+    .card:after{
+      content:"";
+      position:absolute;inset:0;
+      background:
+        radial-gradient(circle at 50% 58%, rgba(214,40,40,.10), transparent 55%),
+        repeating-linear-gradient(45deg, rgba(15,122,58,.08), rgba(15,122,58,.08) 6px, rgba(255,209,102,.08) 6px, rgba(255,209,102,.08) 12px);
+      mix-blend-mode:multiply;
+      opacity:.55;
+      pointer-events:none;
+    }
 
-  button{
-    margin-top:8px;
-    padding:8px 10px;
-    font-weight:800;
-    cursor:pointer;
-  }
+    .card .rank{
+      position:absolute;left:10px;top:26px;
+      font-size:30px;
+      font-weight:900;
+      letter-spacing:.5px;
+      text-shadow: 0 2px 0 rgba(255,255,255,.35);
+    }
+    .card .corner{
+      position:absolute;right:10px;bottom:10px;
+      font-size:14px;
+      font-weight:800;
+      opacity:.85;
+    }
 
-  button:disabled{
-    opacity:.4;
-    cursor:not-allowed;
-  }
+    .card.face{
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.14), transparent 35%),
+        radial-gradient(160px 160px at 25% 25%, rgba(29,78,216,.22), transparent 62%),
+        radial-gradient(180px 180px at 80% 80%, rgba(247,211,106,.26), transparent 62%),
+        linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,255,255,.76));
+    }
+    .card.joker{
+      color:#120818;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.12), transparent 35%),
+        radial-gradient(160px 160px at 30% 25%, rgba(214,40,40,.20), transparent 62%),
+        radial-gradient(180px 180px at 80% 80%, rgba(247,211,106,.28), transparent 62%),
+        linear-gradient(135deg, rgba(220,200,255,.92), rgba(250,230,255,.78));
+    }
 
-  .log{
-    background:#020617;
-    border:1px solid #334155;
-    padding:10px;
-    height:260px;
-    overflow:auto;
-    font-size:13px;
-  }
+    .card.selected{
+      outline:3px solid rgba(247,211,106,.75);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
+    }
 
-  .log div{margin-bottom:6px}
-</style>
+    .zoneTitle{
+      font-size:18px;
+      font-weight:900;
+      margin:0 0 10px;
+    }
+
+    .pickedWrap{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:240px;
+    }
+    .pickedSlot{
+      height:140px;
+      border-radius:18px;
+      border:1px dashed rgba(255,255,255,.22);
+      display:grid;
+      place-items:center;
+      background: rgba(0,0,0,.18);
+      color:var(--muted);
+      position:relative;
+      overflow:hidden;
+      padding:10px;
+      text-align:center;
+    }
+    .pickedSlot .hint{
+      font-size:12px;
+      opacity:.9;
+      line-height:1.25;
+    }
+
+    .controls{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+      margin-top:6px;
+    }
+    button{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    button:hover{filter:brightness(1.05)}
+    button.primary{
+      background: linear-gradient(135deg, rgba(15,122,58,.55), rgba(255,209,102,.22));
+      border-color: rgba(124,255,178,.25);
+    }
+    button.danger{
+      background: linear-gradient(135deg, rgba(214,40,40,.42), rgba(255,111,177,.18));
+      border-color: rgba(255,111,177,.25);
+    }
+    button.warn{
+      background: linear-gradient(135deg, rgba(255,209,102,.35), rgba(29,78,216,.12));
+      border-color: rgba(255,209,102,.35);
+    }
+    button:disabled{
+      opacity:.45;cursor:not-allowed;filter:grayscale(.2);
+    }
+
+    .log{
+      height:360px;
+      overflow:auto;
+      padding-right:6px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .logItem{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      border-radius:14px;
+      padding:10px 12px;
+      color:var(--muted);
+      line-height:1.35;
+      font-size:13px;
+    }
+    .logItem strong{color:var(--text)}
+
+    .small{font-size:12px;color:var(--muted)}
+    .statRow{display:flex;gap:10px;flex-wrap:wrap}
+    .stat{border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.18); border-radius:14px; padding:10px 12px; min-width:200px}
+    .stat .name{font-weight:900}
+    .stat .meta{font-size:13px;color:var(--muted);margin-top:4px}
+    .stat .meta b{color:var(--text)}
+
+    /* Modals */
+    .modal{
+      position:fixed;inset:0;
+      background: rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:999;
+    }
+    .modal.show{display:flex}
+    .modalCard{
+      width:min(900px, 100%);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:20px;
+      background: linear-gradient(135deg, rgba(10,18,30,.92), rgba(6,12,20,.82));
+      box-shadow: 0 22px 80px rgba(0,0,0,.65);
+      overflow:hidden;
+    }
+    .modalHd{
+      padding:14px 16px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .modalHd .title{font-weight:900;font-size:18px}
+    .modalBd{padding:16px}
+    .modalGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    .box{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:16px;
+      background: rgba(0,0,0,.18);
+      padding:14px;
+    }
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    select,input{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      outline:none;
+    }
+    .modalActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.35}
+
+    .scoreRow{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.16);
+      border-radius:14px;
+      margin-bottom:10px;
+    }
+    .winner{
+      outline:3px solid rgba(247,211,106,.65);
+      box-shadow: 0 18px 60px rgba(0,0,0,.55);
+    }
+    .scoreLeft{font-weight:900}
+    .scoreRight{color:var(--muted)}
+    .scoreRight b{color:var(--text)}
+    .bigWin{
+      font-size:22px;
+      font-weight:900;
+      margin:0 0 10px;
+    }
+
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      .log{height:260px}
+      .modalGrid{grid-template-columns:1fr}
+    }
+  </style>
 </head>
 
 <body>
+  <div class="wrap">
+    <header>
+      <h1>Injera Be Wat</h1>
+      <div class="sub">
+        <b>Setup:</b> Each player draws <b>1 starter card</b> (auto-banked). If a Joker is drawn, it goes back into the Circle randomly and you draw again.<br/>
+        Then players seed the Middle with <b>3 draws</b> (Jokers also go back randomly during seeding).<br/>
+        <b>Play:</b> Pick from Circle. Capture from Middle by <b>MATCH</b> or <b>ADD</b> (2+ cards sum to picked value).<br/>
+        <b>End:</b> When the last Circle card is picked, the last picker takes any remaining Middle cards, then score.
+      </div>
+    </header>
 
-<h1>Injera Be Wat</h1>
-<div class="sub">
-Pick from the Circle. Add or Match from the Middle. Capture as much as you can before ending your turn.
-</div>
+    <div class="grid">
+      <!-- MAIN -->
+      <section class="panel">
+        <div class="hd">
+          <div class="pill"><b>Turn:</b> <span id="turnName"></span></div>
+          <div class="pill"><b>Phase:</b> <span id="phaseLabel"></span></div>
+          <div class="pill">Circle: <b id="deckCount"></b></div>
+          <div class="pill">Middle: <b id="midCount"></b></div>
+          <div class="pill">Selected sum: <b id="selSum">0</b></div>
+        </div>
 
-<div class="board">
-  <div class="left">
+        <div class="bd">
+          <div class="row center" style="justify-content:space-between;gap:18px;">
+            <div class="row center" style="gap:18px;">
+              <div>
+                <div class="zoneTitle">Circle</div>
+                <div id="circleBtn" class="circleBtn">
+                  <div class="mini">draw</div>
+                  <div class="label">PICK</div>
+                </div>
+                <div class="small" style="margin-top:8px;" id="circleHint"></div>
+              </div>
 
-    <div class="zoneTitle">Circle</div>
-    <div id="circleBtn" class="circleBtn">PICK</div>
+              <div class="pickedWrap">
+                <div class="zoneTitle">Picked</div>
+                <div class="pickedSlot" id="pickedSlot"></div>
 
-    <div class="zoneTitle">Picked</div>
-    <div id="pickedSlot" class="pickedSlot">—</div>
+                <div class="controls">
+                  <button id="btnMatch" disabled>CAPTURE (MATCH)</button>
+                  <button id="btnAdd" disabled>CAPTURE (ADD)</button>
+                  <button id="btnClear" disabled>CLEAR</button>
+                  <button id="btnEnd" class="danger">END TURN</button>
+                  <button id="btnEndGame" class="warn" disabled>END GAME</button>
+                  <button id="btnNew" class="primary">NEW GAME</button>
+                </div>
 
-    <button id="btnMatch" disabled>MATCH</button>
-    <button id="btnAdd" disabled>ADD</button>
-    <button id="btnClear" disabled>CLEAR</button>
-    <button id="btnEnd">END TURN</button>
+                <div class="small" id="tip" style="margin-top:6px;"></div>
+              </div>
+            </div>
 
-    <div class="zoneTitle">Middle</div>
-    <div id="middleRow" class="row"></div>
+            <div style="flex:1;min-width:280px;">
+              <div class="zoneTitle">Middle (tap cards to select)</div>
+              <div class="row" id="middleRow" style="gap:12px;flex-wrap:wrap;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT -->
+      <aside class="panel">
+        <div class="hd">
+          <div style="font-weight:900;font-size:18px;">Players</div>
+          <div class="pill">Score counts at end</div>
+        </div>
+        <div class="bd">
+          <div class="statRow" id="playersBox"></div>
+
+          <div style="margin-top:14px;font-weight:900;font-size:18px;">Log</div>
+          <div class="log" id="log"></div>
+        </div>
+      </aside>
+    </div>
   </div>
 
-  <div class="right">
-    <div class="zoneTitle">Log</div>
-    <div id="log" class="log"></div>
+  <!-- Start Modal -->
+  <div class="modal show" id="startModal">
+    <div class="modalCard">
+      <div class="modalHd">
+        <div class="title">Start Injera Be Wat</div>
+        <button id="btnCloseModal">Close</button>
+      </div>
+      <div class="modalBd">
+        <div class="modalGrid">
+          <div class="box">
+            <label>How many players?</label>
+            <select id="playerCount">
+              <option value="2">2 Players (Pass &amp; Play)</option>
+              <option value="3" selected>3 Players (Pass &amp; Play)</option>
+            </select>
+            <div class="note">
+              Setup is Joker-safe: Joker goes back into the Circle randomly, then draw again.
+            </div>
+          </div>
+
+          <div class="box">
+            <label>Player names (optional)</label>
+            <div style="display:grid;gap:10px;">
+              <input id="name1" placeholder="Player 1 name" />
+              <input id="name2" placeholder="Player 2 name" />
+              <input id="name3" placeholder="Player 3 name (only for 3 players)" />
+            </div>
+            <div class="modalActions">
+              <button class="primary" id="btnStartGame">START</button>
+              <button id="btnResetDefaults">Reset names</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="note">
+          <b>Scoring (end only):</b> 1–10 = 1 point each • J/Q/K = 10 points • Joker = 1 point
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
-<script>
-const $ = id => document.getElementById(id);
+  <!-- Score Modal -->
+  <div class="modal" id="scoreModal">
+    <div class="modalCard">
+      <div class="modalHd">
+        <div class="title">Game Over — Final Scores</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button id="btnCloseScore">Close</button>
+          <button class="primary" id="btnNewFromScore">NEW GAME</button>
+        </div>
+      </div>
+      <div class="modalBd">
+        <p class="bigWin" id="winnerLine"></p>
+        <div id="scoreBoard"></div>
+        <div class="note" id="scoreRulesNote"></div>
+      </div>
+    </div>
+  </div>
 
-let deck = [];
-let middle = [];
-let picked = null;
-let selected = new Set();
-let capturedThisTurn = false;
+  <script>
+    // ========= Helpers =========
+    const $ = (id)=>document.getElementById(id);
+    const suits = ["♠","♥","♦","♣"];
 
-function log(msg){
-  const d = document.createElement("div");
-  d.innerHTML = msg;
-  $("log").prepend(d);
-}
+    function shuffle(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]] = [arr[j],arr[i]];
+      }
+      return arr;
+    }
 
-function newDeck(){
-  const d=[];
-  for(let i=1;i<=10;i++){
-    for(let j=0;j<4;j++) d.push(i);
-  }
-  d.push("JOKER","JOKER");
-  return d.sort(()=>Math.random()-.5);
-}
+    function isNumericCard(card){
+      return card.rank === "A" || (typeof card.rank === "number" && card.rank>=2 && card.rank<=10);
+    }
 
-function start(){
-  deck = newDeck();
-  middle = [deck.pop(), deck.pop(), deck.pop()];
-  picked = null;
-  selected.clear();
-  log("New game started.");
-  render();
-}
+    function addValue(card){
+      // For ADD comparisons only (A=1, 2-10=number)
+      if(card.rank === "A") return 1;
+      if(typeof card.rank === "number") return card.rank;
+      return 10;
+    }
 
-function render(){
-  $("circleBtn").classList.toggle("disabled", !!picked);
-  $("pickedSlot").innerHTML = picked ?? "—";
+    // ======= YOUR SCORING RULES (END ONLY) =======
+    // 1–10 = 1 point each (A counts as 1)
+    // J/Q/K = 10 points each
+    // Joker = 1 point
+    function cardPoints(card){
+      if(card.type === "joker") return 1;
+      if(card.type === "face") return 10;
+      return 1;
+    }
+    function playerPoints(player){
+      return player.pile.reduce((sum,c)=>sum + cardPoints(c), 0);
+    }
 
-  const mid = $("middleRow");
-  mid.innerHTML="";
-  middle.forEach((v,i)=>{
-    const c=document.createElement("div");
-    c.className="card"+(selected.has(i)?" selected":"");
-    c.textContent=v;
-    c.onclick=()=>{
-      if(!picked) return;
-      selected.has(i)?selected.delete(i):selected.add(i);
-      updateButtons();
+    // ========= Game State =========
+    let state;
+
+    function newDeck(){
+      const deck = [];
+      for(const s of suits){
+        deck.push({rank:"A", suit:s, type:"num", id:crypto.randomUUID()});
+        for(let n=2;n<=10;n++){
+          deck.push({rank:n, suit:s, type:"num", id:crypto.randomUUID()});
+        }
+        ["J","Q","K"].forEach(r=> deck.push({rank:r, suit:s, type:"face", id:crypto.randomUUID()}));
+      }
+      deck.push({rank:"JOKER", suit:"", type:"joker", id:crypto.randomUUID()});
+      deck.push({rank:"JOKER", suit:"", type:"joker", id:crypto.randomUUID()});
+      return shuffle(deck);
+    }
+
+    function makePlayers(count, names){
+      const players = [];
+      for(let i=0;i<count;i++){
+        players.push({name: names[i] || `Player ${i+1}`, pile:[]});
+      }
+      return players;
+    }
+
+    function resetGame(playerCount=3, names=["Player 1","Player 2","Player 3"]){
+      state = {
+        players: makePlayers(playerCount, names),
+        turn: 0,
+        deck: newDeck(),
+        middle: [],
+        picked: null,
+        selectedIds: new Set(),
+        capturedThisTurn: false,
+
+        phase: "starter",          // "starter" -> "seed" -> "play"
+        starterRemaining: playerCount,
+        seedRemaining: 3,          // seed the middle with 3 draws
+        finalDrawnBy: null,        // index of last player who picked final circle card
+      };
+
+      logClear();
+      logMsg(`<strong>New game started.</strong> Setup begins now.`);
+      logMsg(`<strong>Setup step 1:</strong> Each player draws <strong>1 starter card</strong> (auto-banked). Joker goes back randomly; same player draws again.`);
       render();
-    };
-    mid.appendChild(c);
-  });
+    }
 
-  updateButtons();
-}
+    // ===== Setup Joker rule helpers =====
+    function putBackJokerRandomly(card){
+      const pos = Math.floor(Math.random() * (state.deck.length + 1));
+      state.deck.splice(pos, 0, card);
+    }
 
-function updateButtons(){
-  $("btnClear").disabled = selected.size===0;
-  $("btnMatch").disabled = !picked || selected.size===0;
-  $("btnAdd").disabled = !picked || selected.size<2 || typeof picked!=="number";
-}
+    function drawNonJokerFromCircleForSetup(){
+      // Try a few times in case jokers pop repeatedly
+      for(let tries=0; tries<20; tries++){
+        if(state.deck.length===0) return null;
+        const c = state.deck.pop();
+        if(c.type === "joker"){
+          putBackJokerRandomly(c);
+          logMsg(`⚠️ Joker drawn during setup — put back into the Circle randomly. Draw again.`);
+          continue;
+        }
+        return c;
+      }
+      // Safety fallback
+      return state.deck.pop() || null;
+    }
 
-$("circleBtn").onclick=()=>{
-  if(picked || deck.length===0) return;
-  picked = deck.pop();
-  selected.clear();
-  capturedThisTurn=false;
+    // ========= Rendering =========
+    function cardClass(card){
+      if(card.type==="joker") return "card joker";
+      if(card.type==="face") return "card face";
+      return "card";
+    }
 
-  if(picked==="JOKER"){
-    middle=[];
-    picked=null;
-    log("JOKER! Middle cleared.");
-    return;
-  }
+    function cardLabel(card){
+      if(card.type==="joker") return "JOKER";
+      return `${card.rank}${card.suit}`;
+    }
 
-  log("Picked "+picked);
-  render();
-};
+    function renderCard(card, {selected=false}={}){
+      const div = document.createElement("div");
+      div.className = cardClass(card) + (selected ? " selected" : "");
+      div.dataset.id = card.id;
 
-$("btnClear").onclick=()=>{
-  selected.clear();
-  render();
-};
+      const rank = document.createElement("div");
+      rank.className = "rank";
+      rank.textContent = (card.type==="joker") ? "★" : (card.rank);
+      div.appendChild(rank);
 
-$("btnMatch").onclick=()=>{
-  const sel=[...selected];
-  if(sel.every(i=>middle[i]===picked)){
-    sel.sort((a,b)=>b-a).forEach(i=>middle.splice(i,1));
-    selected.clear();
-    capturedThisTurn=true;
-    log("MATCH captured.");
-    render();
-  }else{
-    log("MATCH failed.");
-  }
-};
+      const corner = document.createElement("div");
+      corner.className = "corner";
+      corner.textContent = (card.type==="joker") ? "JOKER" : card.suit;
+      div.appendChild(corner);
 
-$("btnAdd").onclick=()=>{
-  const sum=[...selected].reduce((a,i)=>a+middle[i],0);
-  if(sum===picked){
-    [...selected].sort((a,b)=>b-a).forEach(i=>middle.splice(i,1));
-    selected.clear();
-    capturedThisTurn=true;
-    log("ADD captured.");
-    render();
-  }else{
-    log("ADD failed.");
-  }
-};
+      return div;
+    }
 
-$("btnEnd").onclick=()=>{
-  if(!picked) return;
-  if(!capturedThisTurn){
-    middle.push(picked);
-    log("No capture. Card goes to middle.");
-  }
-  picked=null;
-  selected.clear();
-  render();
-};
+    function selectedCards(){
+      return state.middle.filter(c=>state.selectedIds.has(c.id));
+    }
 
-start();
-</script>
+    function updateSelectionUI(){
+      const sel = selectedCards();
+      const sum = sel.reduce((a,c)=>a+addValue(c),0);
+      $("selSum").textContent = sum;
 
+      const hasPicked = !!state.picked;
+      const hasSelection = sel.length>0;
+      const inPlay = state.phase === "play";
+
+      $("btnClear").disabled = !(inPlay && hasPicked && hasSelection);
+      $("btnMatch").disabled = !(inPlay && hasPicked && hasSelection);
+
+      const canAdd = inPlay && hasPicked && isNumericCard(state.picked) && sel.length>=2;
+      $("btnAdd").disabled = !canAdd;
+
+      $("btnEnd").disabled = !inPlay;
+
+      const endGameAllowed = (state.finalDrawnBy !== null) && inPlay && !state.picked;
+      $("btnEndGame").disabled = !endGameAllowed;
+    }
+
+    function render(){
+      $("turnName").textContent = state.players[state.turn].name;
+
+      const phaseLabel =
+        (state.phase==="starter") ? `SETUP: Starter draws (${state.starterRemaining} left)` :
+        (state.phase==="seed")    ? `SETUP: Seed Middle (${state.seedRemaining} left)` :
+                                   "PLAY";
+      $("phaseLabel").textContent = phaseLabel;
+
+      $("deckCount").textContent = state.deck.length;
+      $("midCount").textContent = state.middle.length;
+
+      if(state.phase==="starter"){
+        $("circleHint").textContent = "Setup: click Circle to draw your starter card (Joker goes back randomly; draw again).";
+      } else if(state.phase==="seed"){
+        $("circleHint").textContent = "Setup: click Circle to place a card into the Middle (Joker goes back randomly; draw again).";
+      } else {
+        $("circleHint").textContent = (state.deck.length===0)
+          ? "Circle is empty. Finish the last turn, then END GAME."
+          : "Click the Circle to draw 1 card.";
+      }
+
+      const circle = $("circleBtn");
+      const circleDisabled =
+        (state.phase==="play" && !!state.picked) ||
+        (state.deck.length===0);
+      circle.classList.toggle("disabled", circleDisabled);
+
+      const slot = $("pickedSlot");
+      slot.innerHTML = "";
+      if(state.phase==="starter"){
+        slot.innerHTML = `<div class="hint"><b>Setup step 1</b><br/>Draw your starter card. Joker goes back randomly.</div>`;
+      } else if(state.phase==="seed"){
+        slot.innerHTML = `<div class="hint"><b>Setup step 2</b><br/>Seed the Middle with 3 draws. Joker goes back randomly.</div>`;
+      } else if(!state.picked){
+        slot.innerHTML = `<div class="hint">No picked card yet.</div>`;
+      } else {
+        slot.appendChild(renderCard(state.picked));
+      }
+
+      $("tip").innerHTML =
+        (state.phase==="play")
+          ? `Tip: You can capture multiple times with the same picked card before END TURN.`
+          : `Tip: Setup goes fast — then the real game begins.`;
+
+      const mid = $("middleRow");
+      mid.innerHTML = "";
+      state.middle.forEach(c=>{
+        const node = renderCard(c,{selected: state.selectedIds.has(c.id)});
+        node.addEventListener("click", ()=>{
+          if(state.phase!=="play") return;
+          if(!state.picked) return;
+          if(state.selectedIds.has(c.id)) state.selectedIds.delete(c.id);
+          else state.selectedIds.add(c.id);
+          render();
+        });
+        mid.appendChild(node);
+      });
+
+      const pbox = $("playersBox");
+      pbox.innerHTML = "";
+      state.players.forEach((p, idx)=>{
+        const pts = playerPoints(p);
+        const card = document.createElement("div");
+        card.className = "stat";
+        card.innerHTML = `
+          <div class="name">${idx===state.turn ? "▶ " : ""}${p.name}</div>
+          <div class="meta">Cards collected: <b>${p.pile.length}</b></div>
+          <div class="meta">Points (if ended now): <b>${pts}</b></div>
+        `;
+        pbox.appendChild(card);
+      });
+
+      updateSelectionUI();
+    }
+
+    // ========= Log =========
+    function logMsg(html){
+      const item = document.createElement("div");
+      item.className="logItem";
+      item.innerHTML = html;
+      $("log").prepend(item);
+    }
+    function logClear(){
+      $("log").innerHTML = "";
+    }
+
+    // ========= Turn helpers =========
+    function currentPlayer(){ return state.players[state.turn]; }
+    function advanceTurn(){ state.turn = (state.turn + 1) % state.players.length; }
+
+    // ========= Game Over / Scoring =========
+    function computeScores(){
+      return state.players.map((p, idx)=>({
+        idx,
+        name: p.name,
+        cards: p.pile.length,
+        points: playerPoints(p)
+      })).sort((a,b)=> b.points - a.points);
+    }
+
+    function openScoreModal(){
+      const scores = computeScores();
+      const best = scores[0];
+      const tied = scores.filter(s=> s.points === best.points);
+
+      $("winnerLine").textContent =
+        (tied.length > 1)
+          ? `It’s a tie! (${tied.map(x=>x.name).join(" & ")}) — ${best.points} points`
+          : `${best.name} wins with ${best.points} points!`;
+
+      const board = $("scoreBoard");
+      board.innerHTML = "";
+      scores.forEach((s,i)=>{
+        const row = document.createElement("div");
+        row.className = "scoreRow" + (s.points===best.points ? " winner" : "");
+        row.innerHTML = `
+          <div class="scoreLeft">${i+1}. ${s.name}</div>
+          <div class="scoreRight">Cards: <b>${s.cards}</b> &nbsp;•&nbsp; Points: <b>${s.points}</b></div>
+        `;
+        board.appendChild(row);
+      });
+
+      $("scoreRulesNote").innerHTML =
+        `Scoring (end only): 1–10 = 1 point each • J/Q/K = 10 points each • Joker = 1 point`;
+
+      $("scoreModal").classList.add("show");
+    }
+    function closeScoreModal(){ $("scoreModal").classList.remove("show"); }
+
+    function endGame(){
+      if(state.phase!=="play"){
+        logMsg(`You can’t end the game during setup.`);
+        return;
+      }
+      if(state.finalDrawnBy === null){
+        logMsg(`The Circle isn’t empty yet. Game ends when the last Circle card is picked.`);
+        return;
+      }
+      if(state.picked){
+        logMsg(`Finish the last turn first (END TURN), then END GAME.`);
+        return;
+      }
+
+      if(state.middle.length > 0){
+        const taker = state.players[state.finalDrawnBy];
+        const taken = state.middle.length;
+        taker.pile.push(...state.middle);
+        state.middle = [];
+        logMsg(`<strong>End rule:</strong> <strong>${taker.name}</strong> was the last to pick from the Circle, so they collect the remaining Middle cards (<b>${taken}</b>).`);
+      }
+
+      logMsg(`<strong>Game over.</strong> Final scoring complete.`);
+      render();
+      openScoreModal();
+    }
+
+    // ========= Actions =========
+    function drawCard(){
+      if(state.deck.length===0){
+        logMsg(`<strong>Circle is empty.</strong> Finish the last turn, then END GAME.`);
+        render();
+        return;
+      }
+
+      // SETUP: starter draws (joker goes back randomly; same player draws again)
+      if(state.phase==="starter"){
+        const p = currentPlayer();
+        const c = drawNonJokerFromCircleForSetup();
+        if(!c){
+          logMsg(`<strong>Circle is empty during setup.</strong>`);
+          render();
+          return;
+        }
+
+        p.pile.push(c);
+        logMsg(`<strong>${p.name}</strong> draws starter card <strong>${cardLabel(c)}</strong> (auto-banked).`);
+
+        state.starterRemaining -= 1;
+
+        if(state.starterRemaining > 0){
+          advanceTurn();
+        } else {
+          state.phase = "seed";
+          state.turn = 0;
+          logMsg(`<strong>Setup step 2:</strong> Seed the Middle with <strong>3 draws</strong> (players take turns). Joker goes back randomly.`);
+        }
+
+        render();
+        return;
+      }
+
+      // SETUP: seed middle (joker goes back randomly; same player draws again)
+      if(state.phase==="seed"){
+        const p = currentPlayer();
+        const c = drawNonJokerFromCircleForSetup();
+        if(!c){
+          logMsg(`<strong>Circle is empty during setup.</strong>`);
+          render();
+          return;
+        }
+
+        state.middle.push(c);
+        logMsg(`<strong>${p.name}</strong> seeds the Middle with <strong>${cardLabel(c)}</strong>.`);
+
+        state.seedRemaining -= 1;
+
+        if(state.seedRemaining > 0){
+          advanceTurn();
+        } else {
+          state.phase = "play";
+          state.turn = 0;
+          logMsg(`<strong>Setup complete.</strong> Normal play begins. <strong>${currentPlayer().name}</strong> goes first.`);
+        }
+
+        render();
+        return;
+      }
+
+      // PLAY: draw 1 card
+      if(state.phase==="play"){
+        if(state.picked) return;
+
+        const c = state.deck.pop();
+        state.picked = c;
+        state.selectedIds.clear();
+        state.capturedThisTurn = false;
+
+        if(state.deck.length === 0){
+          state.finalDrawnBy = state.turn;
+          logMsg(`<strong>Last card picked from the Circle!</strong> Finish this turn. Then click <b>END GAME</b>.`);
+        }
+
+        if(c.type==="joker"){
+          const taker = currentPlayer();
+          let taken = 0;
+
+          taken += state.middle.length;
+          taker.pile.push(...state.middle);
+          state.middle = [];
+
+          state.players.forEach(p=>{
+            if(p!==taker){
+              taken += p.pile.length;
+              taker.pile.push(...p.pile);
+              p.pile = [];
+            }
+          });
+
+          taker.pile.push(c);
+          state.picked = null;
+
+          logMsg(`<strong>${taker.name}</strong> drew a <strong>JOKER</strong> and collected <strong>everything</strong> (taken cards: <b>${taken}</b> + Joker). Turn ends.`);
+          advanceTurn();
+          render();
+          return;
+        }
+
+        logMsg(`<strong>${currentPlayer().name}</strong> picked <strong>${cardLabel(state.picked)}</strong>. Select Middle cards, then CAPTURE.`);
+        render();
+        return;
+      }
+    }
+
+    function clearSelection(){
+      state.selectedIds.clear();
+      render();
+    }
+
+    function captureMatch(){
+      if(state.phase!=="play") return;
+      if(!state.picked) return;
+
+      const sel = selectedCards();
+      if(sel.length===0){
+        logMsg(`Select at least 1 Middle card for MATCH.`);
+        return;
+      }
+
+      const ok = sel.every(c=> c.rank === state.picked.rank);
+      if(!ok){
+        logMsg(`❌ MATCH failed. Selected cards must all match the picked rank (<strong>${state.picked.rank}</strong>).`);
+        return;
+      }
+
+      state.middle = state.middle.filter(c=> !state.selectedIds.has(c.id));
+      currentPlayer().pile.push(...sel);
+      state.selectedIds.clear();
+      state.capturedThisTurn = true;
+
+      logMsg(`✅ <strong>${currentPlayer().name}</strong> MATCH captured <b>${sel.length}</b> card(s). You can capture again with the same picked card.`);
+      render();
+    }
+
+    function captureAdd(){
+      if(state.phase!=="play") return;
+      if(!state.picked) return;
+
+      if(!isNumericCard(state.picked)){
+        logMsg(`ADD only works when the picked card is A or 2–10.`);
+        return;
+      }
+
+      const sel = selectedCards();
+      if(sel.length < 2){
+        logMsg(`Select <strong>2 or more</strong> Middle cards to ADD.`);
+        return;
+      }
+
+      const target = addValue(state.picked);
+      const sum = sel.reduce((a,c)=>a+addValue(c),0);
+
+      if(sum !== target){
+        logMsg(`❌ ADD failed. Selected sum is <b>${sum}</b> but picked is <b>${target}</b>.`);
+        return;
+      }
+
+      state.middle = state.middle.filter(c=> !state.selectedIds.has(c.id));
+      currentPlayer().pile.push(...sel);
+      state.selectedIds.clear();
+      state.capturedThisTurn = true;
+
+      logMsg(`✅ <strong>${currentPlayer().name}</strong> ADD captured <b>${sel.length}</b> card(s) (sum ${sum}). You can capture again with the same picked card.`);
+      render();
+    }
+
+    function endTurn(){
+      if(state.phase!=="play"){
+        logMsg(`During setup, just click PICK.`);
+        return;
+      }
+
+      if(!state.picked){
+        logMsg(`Pick a card first.`);
+        return;
+      }
+
+      const p = currentPlayer();
+
+      if(state.capturedThisTurn){
+        p.pile.push(state.picked);
+        logMsg(`<strong>${p.name}</strong> ends turn and banks picked card <strong>${cardLabel(state.picked)}</strong>.`);
+      } else {
+        state.middle.push(state.picked);
+        logMsg(`<strong>${p.name}</strong> could not play <strong>${cardLabel(state.picked)}</strong>, so it goes to the Middle.`);
+      }
+
+      state.picked = null;
+      state.selectedIds.clear();
+      state.capturedThisTurn = false;
+
+      advanceTurn();
+      render();
+    }
+
+    // ========= Wire up =========
+    $("circleBtn").addEventListener("click", ()=>{
+      if($("circleBtn").classList.contains("disabled")) return;
+      drawCard();
+    });
+    $("btnClear").addEventListener("click", clearSelection);
+    $("btnMatch").addEventListener("click", captureMatch);
+    $("btnAdd").addEventListener("click", captureAdd);
+    $("btnEnd").addEventListener("click", endTurn);
+    $("btnEndGame").addEventListener("click", endGame);
+
+    $("btnNew").addEventListener("click", ()=>{
+      $("startModal").classList.add("show");
+    });
+
+    // ========= Start modal =========
+    function closeModal(){ $("startModal").classList.remove("show"); }
+    $("btnCloseModal").addEventListener("click", closeModal);
+
+    $("btnResetDefaults").addEventListener("click", ()=>{
+      $("name1").value = "";
+      $("name2").value = "";
+      $("name3").value = "";
+    });
+
+    $("playerCount").addEventListener("change", ()=>{
+      const count = Number($("playerCount").value);
+      $("name3").disabled = (count !== 3);
+      if(count !== 3) $("name3").value = "";
+    });
+
+    $("btnStartGame").addEventListener("click", ()=>{
+      const count = Number($("playerCount").value);
+      const names = [
+        $("name1").value.trim(),
+        $("name2").value.trim(),
+        $("name3").value.trim(),
+      ];
+      resetGame(count, names);
+      closeModal();
+    });
+
+    // ========= Score modal =========
+    $("btnCloseScore").addEventListener("click", closeScoreModal);
+    $("btnNewFromScore").addEventListener("click", ()=>{
+      closeScoreModal();
+      $("startModal").classList.add("show");
+    });
+
+    // Start
+    resetGame(3, ["Player 1","Player 2","Player 3"]);
+  </script>
 </body>
 </html>
