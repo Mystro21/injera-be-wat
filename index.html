@@ -1,277 +1,811 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Injera Be Wat — Prototype</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Injera Be Wat — Prototype</title>
 
-<style>
-/* =========================
-   THEME (Ethiopian holiday)
-========================= */
-:root{
-  --bg:#0b0f14;
-  --panel:#121a24;
-  --border:#22324a;
-  --text:#eaf0ff;
-  --muted:#b6c2e3;
+  <style>
+    :root{
+      --bg:#071018;
+      --panel:rgba(10,18,30,.78);
+      --panel2:rgba(9,16,26,.60);
+      --border:rgba(255,255,255,.10);
+      --text:#eaf3ff;
+      --muted:#b9c7e8;
 
-  /* Ethiopian colors */
-  --green:#1fa463;
-  --yellow:#f2c94c;
-  --red:#e74c3c;
+      /* Ethiopian holiday palette */
+      --eth-green:#0f7a3a;
+      --eth-yellow:#ffd166;
+      --eth-red:#d62828;
+      --eth-blue:#1d4ed8;
+      --gold:#f7d36a;
 
-  --card-bg:#fdf6e3;
-  --card-text:#1b1b1b;
-}
+      --good:#7cffb2;
+      --bad:#ff6fb1;
+      --warn:#ffd166;
 
-/* =========================
-   BASE
-========================= */
-*{box-sizing:border-box}
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --r: 18px;
+    }
 
-body{
-  margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background:
-    linear-gradient(135deg,
-      rgba(31,164,99,.25),
-      rgba(242,201,76,.20),
-      rgba(231,76,60,.25)
-    ),
-    var(--bg);
-  color:var(--text);
-}
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(900px 600px at 10% 10%, rgba(15,122,58,.22), transparent 60%),
+        radial-gradient(900px 600px at 90% 20%, rgba(214,40,40,.20), transparent 55%),
+        radial-gradient(900px 600px at 55% 90%, rgba(255,209,102,.18), transparent 60%),
+        linear-gradient(180deg, #06111a, #040810 55%, #02040a);
+      min-height:100vh;
+      padding:22px;
+    }
 
-.wrap{
-  max-width:1200px;
-  margin:auto;
-  padding:24px;
-}
+    .wrap{max-width:1200px;margin:0 auto;display:grid;gap:16px}
+    header{
+      padding:18px 20px;
+      border:1px solid var(--border);
+      border-radius:22px;
+      background:
+        radial-gradient(700px 200px at 20% 20%, rgba(29,78,216,.14), transparent 60%),
+        radial-gradient(700px 240px at 80% 20%, rgba(247,211,106,.10), transparent 60%),
+        linear-gradient(135deg, rgba(10,18,30,.88), rgba(6,12,20,.72));
+      box-shadow: var(--shadow);
+    }
+    h1{margin:0;font-size:44px;letter-spacing:.3px}
+    .sub{margin:6px 0 0;color:var(--muted);line-height:1.35}
 
-/* =========================
-   HEADER
-========================= */
-header{
-  background:linear-gradient(135deg,#0e1b26,#142a3a);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:22px 26px;
-  margin-bottom:20px;
-}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.3fr .9fr;
+      gap:16px;
+      align-items:start;
+    }
 
-header h1{
-  margin:0 0 6px;
-  font-size:34px;
-}
+    .panel{
+      border:1px solid var(--border);
+      border-radius: var(--r);
+      background: linear-gradient(135deg, var(--panel), var(--panel2));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panel .hd{
+      padding:14px 16px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .panel .bd{padding:16px}
 
-header p{
-  margin:0;
-  color:var(--muted);
-}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:var(--muted);
+      background: rgba(0,0,0,.18);
+      font-size:13px;
+      white-space:nowrap;
+    }
 
-/* =========================
-   LAYOUT
-========================= */
-.grid{
-  display:grid;
-  grid-template-columns: 1.2fr .8fr;
-  gap:18px;
-}
+    .row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
+    .row.center{align-items:center}
 
-.panel{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:16px;
-}
+    /* Ethiopian holiday “deck” / circle button */
+    .circleBtn{
+      width:160px;height:210px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.16);
+      position:relative;
+      overflow:hidden;
+      cursor:pointer;
+      box-shadow: 0 18px 50px rgba(0,0,0,.55);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.10), transparent 40%),
+        linear-gradient(90deg, rgba(15,122,58,.85), rgba(255,209,102,.85), rgba(214,40,40,.85));
+    }
+    .circleBtn:before{
+      content:"";
+      position:absolute;inset:-40px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(247,211,106,.55), transparent 60%),
+        radial-gradient(circle at 70% 70%, rgba(29,78,216,.45), transparent 65%);
+      transform: rotate(12deg);
+      opacity:.8;
+    }
+    .circleBtn:after{
+      content:"";
+      position:absolute;inset:12px;
+      border-radius:18px;
+      border:2px solid rgba(255,255,255,.22);
+      box-shadow: inset 0 0 0 2px rgba(0,0,0,.15);
+    }
+    .circleBtn .label{
+      position:absolute;left:0;right:0;top:0;bottom:0;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      letter-spacing:1px;
+      font-size:24px;
+      text-transform:uppercase;
+      text-shadow: 0 10px 30px rgba(0,0,0,.55);
+    }
+    .circleBtn .mini{
+      position:absolute;left:12px;top:12px;
+      padding:6px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.20);
+      font-size:12px;color:var(--muted);
+    }
+    .circleBtn.disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.2)}
+    .circleBtn:hover:not(.disabled){transform: translateY(-1px);}
 
-/* =========================
-   CARDS
-========================= */
-.cards{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-}
+    /* Card UI — Ethiopian holiday edition */
+    .card{
+      width:96px;height:132px;
+      border-radius:16px;
+      position:relative;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow: 0 16px 40px rgba(0,0,0,.40);
+      overflow:hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.12), transparent 35%),
+        radial-gradient(120px 120px at 20% 20%, rgba(247,211,106,.35), transparent 60%),
+        radial-gradient(140px 140px at 80% 80%, rgba(29,78,216,.25), transparent 62%),
+        linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
+      color:#0a0f16;
+    }
+    /* Ethiopian ribbon */
+    .card:before{
+      content:"";
+      position:absolute;left:0;top:0;right:0;height:18px;
+      background: linear-gradient(90deg, var(--eth-green), var(--eth-yellow), var(--eth-red));
+      opacity:.95;
+    }
+    /* holiday watermark pattern */
+    .card:after{
+      content:"";
+      position:absolute;inset:0;
+      background:
+        radial-gradient(circle at 50% 58%, rgba(214,40,40,.10), transparent 55%),
+        repeating-linear-gradient(45deg, rgba(15,122,58,.08), rgba(15,122,58,.08) 6px, rgba(255,209,102,.08) 6px, rgba(255,209,102,.08) 12px);
+      mix-blend-mode:multiply;
+      opacity:.55;
+      pointer-events:none;
+    }
 
-.card{
-  width:78px;
-  height:110px;
-  border-radius:14px;
-  background:
-    linear-gradient(135deg,
-      var(--green),
-      var(--yellow),
-      var(--red)
-    );
-  padding:3px;
-  cursor:pointer;
-}
+    .card .rank{
+      position:absolute;left:10px;top:26px;
+      font-size:30px;
+      font-weight:900;
+      letter-spacing:.5px;
+      text-shadow: 0 2px 0 rgba(255,255,255,.35);
+    }
+    .card .corner{
+      position:absolute;right:10px;bottom:10px;
+      font-size:14px;
+      font-weight:800;
+      opacity:.85;
+    }
 
-.card-inner{
-  width:100%;
-  height:100%;
-  border-radius:11px;
-  background:var(--card-bg);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
-  font-weight:800;
-  color:var(--card-text);
-}
+    .card.num1,.card.num2,.card.num3,.card.num4,.card.num5,
+    .card.num6,.card.num7,.card.num8,.card.num9,.card.num10{
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.18), transparent 35%),
+        radial-gradient(140px 140px at 30% 25%, rgba(247,211,106,.40), transparent 62%),
+        radial-gradient(160px 160px at 85% 80%, rgba(15,122,58,.18), transparent 62%),
+        linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,255,255,.80));
+    }
+    .card.face{
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.14), transparent 35%),
+        radial-gradient(160px 160px at 25% 25%, rgba(29,78,216,.22), transparent 62%),
+        radial-gradient(180px 180px at 80% 80%, rgba(247,211,106,.26), transparent 62%),
+        linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,255,255,.76));
+    }
+    .card.joker{
+      color:#120818;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.12), transparent 35%),
+        radial-gradient(160px 160px at 30% 25%, rgba(214,40,40,.20), transparent 62%),
+        radial-gradient(180px 180px at 80% 80%, rgba(247,211,106,.28), transparent 62%),
+        linear-gradient(135deg, rgba(220,200,255,.92), rgba(250,230,255,.78));
+    }
 
-.card.selected{
-  outline:3px solid var(--yellow);
-  transform:translateY(-4px);
-}
+    .card.selected{
+      outline:3px solid rgba(247,211,106,.75);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.55);
+    }
 
-/* =========================
-   BUTTONS
-========================= */
-button{
-  background:#182637;
-  color:var(--text);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:10px 14px;
-  font-weight:600;
-  cursor:pointer;
-}
+    .zoneTitle{
+      font-size:18px;
+      font-weight:900;
+      margin:0 0 10px;
+    }
 
-button.primary{
-  background:var(--green);
-  border-color:#168a53;
-}
+    .pickedWrap{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:120px;
+    }
+    .pickedSlot{
+      height:140px;
+      border-radius:18px;
+      border:1px dashed rgba(255,255,255,.22);
+      display:grid;
+      place-items:center;
+      background: rgba(0,0,0,.18);
+      color:var(--muted);
+      position:relative;
+      overflow:hidden;
+    }
+    .pickedSlot .hint{
+      font-size:12px;
+      opacity:.8;
+      padding:10px;
+      text-align:center;
+      line-height:1.25;
+    }
 
-button.warn{
-  background:#3a2323;
-  border-color:#5c2e2e;
-}
+    .controls{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+      margin-top:12px;
+    }
+    button{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    button:hover{filter:brightness(1.05)}
+    button.primary{
+      background: linear-gradient(135deg, rgba(15,122,58,.55), rgba(255,209,102,.22));
+      border-color: rgba(124,255,178,.25);
+    }
+    button.danger{
+      background: linear-gradient(135deg, rgba(214,40,40,.42), rgba(255,111,177,.18));
+      border-color: rgba(255,111,177,.25);
+    }
+    button:disabled{
+      opacity:.45;cursor:not-allowed;filter:grayscale(.2);
+    }
 
-button:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-}
+    .log{
+      height:330px;
+      overflow:auto;
+      padding-right:6px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .logItem{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.18);
+      border-radius:14px;
+      padding:10px 12px;
+      color:var(--muted);
+      line-height:1.35;
+      font-size:13px;
+    }
+    .logItem strong{color:var(--text)}
+    .small{font-size:12px;color:var(--muted)}
+    .statRow{display:flex;gap:10px;flex-wrap:wrap}
+    .stat{border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.18); border-radius:14px; padding:10px 12px; min-width:180px}
+    .stat .name{font-weight:900}
+    .stat .meta{font-size:13px;color:var(--muted);margin-top:4px}
+    .rightTop{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 
-/* =========================
-   LOG
-========================= */
-.log{
-  max-height:220px;
-  overflow:auto;
-  font-size:14px;
-  color:var(--muted);
-}
-.log div{
-  padding:6px 0;
-  border-bottom:1px dashed var(--border);
-}
-</style>
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      .log{height:260px}
+    }
+  </style>
 </head>
 
 <body>
-<div class="wrap">
+  <div class="wrap">
+    <header>
+      <h1>Injera Be Wat</h1>
+      <div class="sub">
+        Pick from the Circle. Capture from Middle by <b>MATCH</b> or <b>ADD</b> (2+ cards sum to picked value).<br/>
+        If you can’t play it, your picked card goes to the Middle and your turn ends. Two Jokers total. Score at end.
+      </div>
+    </header>
 
-<header>
-  <h1>Injera Be Wat</h1>
-  <p>
-    Pick from the Circle. Capture from Middle by
-    <b>MATCH</b> or <b>ADD</b> (2+ cards sum to picked value).
-    Ethiopian holiday edition.
-  </p>
-</header>
+    <div class="grid">
+      <!-- MAIN -->
+      <section class="panel">
+        <div class="hd">
+          <div class="pill"><b>Turn:</b> <span id="turnName"></span></div>
+          <div class="rightTop">
+            <div class="pill">Circle: <b id="deckCount"></b></div>
+            <div class="pill">Middle: <b id="midCount"></b></div>
+            <div class="pill">Selected sum: <b id="selSum">0</b></div>
+          </div>
+        </div>
 
-<div class="grid">
+        <div class="bd">
+          <div class="row center" style="justify-content:space-between;gap:18px;">
+            <div class="row center" style="gap:18px;">
+              <div>
+                <div class="zoneTitle">Circle</div>
+                <div id="circleBtn" class="circleBtn">
+                  <div class="mini">draw</div>
+                  <div class="label">PICK</div>
+                </div>
+                <div class="small" style="margin-top:8px;">Click the Circle to draw 1 card.</div>
+              </div>
 
-<!-- ================= GAME ================= -->
-<section class="panel">
-  <h3>Middle</h3>
-  <div id="middle" class="cards"></div>
+              <div class="pickedWrap">
+                <div class="zoneTitle">Picked</div>
+                <div class="pickedSlot" id="pickedSlot">
+                  <div class="hint">No picked card yet.</div>
+                </div>
 
-  <div style="margin-top:14px; display:flex; gap:10px;">
-    <button class="primary" onclick="draw()">PICK</button>
-    <button onclick="captureMatch()">CAPTURE (MATCH)</button>
-    <button onclick="captureAdd()">CAPTURE (ADD)</button>
-    <button onclick="clearSelect()">CLEAR</button>
+                <div class="controls">
+                  <button id="btnMatch" disabled>CAPTURE (MATCH)</button>
+                  <button id="btnAdd" disabled>CAPTURE (ADD)</button>
+                  <button id="btnClear" disabled>CLEAR</button>
+                  <button id="btnEnd" class="danger">END TURN</button>
+                  <button id="btnNew" class="primary">NEW GAME</button>
+                </div>
+
+                <div class="small" id="tip" style="margin-top:6px;">
+                  Tip: You can capture multiple times with the same picked card (ex: 10 can take 2+8, then 3+7, etc).
+                </div>
+              </div>
+            </div>
+
+            <div style="flex:1;min-width:280px;">
+              <div class="zoneTitle">Middle (tap cards to select)</div>
+              <div class="row" id="middleRow" style="gap:12px;flex-wrap:wrap;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT -->
+      <aside class="panel">
+        <div class="hd">
+          <div style="font-weight:900;font-size:18px;">Players</div>
+          <div class="pill">Score counts at end</div>
+        </div>
+        <div class="bd">
+          <div class="statRow" id="playersBox"></div>
+
+          <div style="margin-top:14px;font-weight:900;font-size:18px;">Log</div>
+          <div class="log" id="log"></div>
+        </div>
+      </aside>
+    </div>
   </div>
-</section>
 
-<!-- ================= SIDE ================= -->
-<aside class="panel">
-  <h3>Log</h3>
-  <div id="log" class="log"></div>
-</aside>
+  <script>
+    // ========= Helpers =========
+    const $ = (id)=>document.getElementById(id);
+    const suits = ["♠","♥","♦","♣"];
 
-</div>
-</div>
-
-<script>
-/* =========================
-   GAME LOGIC (simple & safe)
-========================= */
-const middle = [];
-let picked = null;
-let selected = [];
-
-function log(msg){
-  const d=document.createElement('div');
-  d.textContent=msg;
-  document.getElementById('log').prepend(d);
-}
-
-function render(){
-  const m=document.getElementById('middle');
-  m.innerHTML='';
-  middle.forEach((v,i)=>{
-    const c=document.createElement('div');
-    c.className='card'+(selected.includes(i)?' selected':'');
-    c.onclick=()=>toggle(i);
-    c.innerHTML=`<div class="card-inner">${v}</div>`;
-    m.appendChild(c);
-  });
-}
-
-function toggle(i){
-  selected.includes(i)
-    ? selected=selected.filter(x=>x!==i)
-    : selected.push(i);
-  render();
-}
-
-function draw(){
-  picked=Math.floor(Math.random()*10)+1;
-  log(`Picked ${picked}`);
-}
-
-function captureMatch(){
-  if(picked==null) return;
-  selected.forEach(i=>{
-    if(middle[i]===picked){
-      log(`Captured ${picked} by MATCH`);
-      middle.splice(i,1);
+    function shuffle(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]] = [arr[j],arr[i]];
+      }
+      return arr;
     }
-  });
-  selected=[];
-  render();
-}
 
-function captureAdd(){
-  if(picked==null) return;
-  const sum=selected.reduce((s,i)=>s+middle[i],0);
-  if(sum===picked){
-    log(`Captured ${sum} by ADD`);
-    selected.sort((a,b)=>b-a).forEach(i=>middle.splice(i,1));
-  }
-  selected=[];
-  render();
-}
+    function isNumericCard(card){
+      // allow A as 1, 2-10 as numeric (ADD allowed only for these)
+      return card.rank === "A" || (typeof card.rank === "number" && card.rank>=2 && card.rank<=10);
+    }
+    function addValue(card){
+      if(card.rank === "A") return 1;
+      if(typeof card.rank === "number") return card.rank;
+      return 10; // face default value (but we won't allow ADD with face picked)
+    }
 
-/* init */
-for(let i=0;i<5;i++) middle.push(Math.floor(Math.random()*10)+1);
-render();
-</script>
+    // ========= Game State =========
+    let state;
 
+    function newDeck(){
+      const deck = [];
+      // Standard 52
+      for(const s of suits){
+        // A
+        deck.push({rank:"A", suit:s, type:"num", id:crypto.randomUUID()});
+        // 2-10
+        for(let n=2;n<=10;n++){
+          deck.push({rank:n, suit:s, type:"num", id:crypto.randomUUID()});
+        }
+        // J Q K
+        ["J","Q","K"].forEach(r=>{
+          deck.push({rank:r, suit:s, type:"face", id:crypto.randomUUID()});
+        });
+      }
+      // Two Jokers
+      deck.push({rank:"JOKER", suit:"", type:"joker", id:crypto.randomUUID()});
+      deck.push({rank:"JOKER", suit:"", type:"joker", id:crypto.randomUUID()});
+      return shuffle(deck);
+    }
+
+    function resetGame(){
+      state = {
+        players:[
+          {name:"Player 1", pile:[]},
+          {name:"Player 2", pile:[]},
+          {name:"Player 3", pile:[]},
+        ],
+        turn:0,
+        deck:newDeck(),
+        middle:[],
+        picked:null,
+        selectedIds:new Set(),
+        capturedThisTurn:false,
+      };
+
+      // Deal 3 to middle
+      for(let i=0;i<3;i++){
+        state.middle.push(state.deck.pop());
+      }
+      logClear();
+      logMsg(`New game started. Middle begins with <strong>3</strong> cards.`);
+      render();
+    }
+
+    // ========= Rendering =========
+    function cardClass(card){
+      if(card.type==="joker") return "card joker";
+      if(card.type==="face") return "card face";
+      // numeric
+      const v = addValue(card);
+      return "card num"+v;
+    }
+
+    function cardLabel(card){
+      if(card.type==="joker") return "JOKER";
+      return `${card.rank}${card.suit}`;
+    }
+
+    function renderCard(card, {selected=false}={}){
+      const div = document.createElement("div");
+      div.className = cardClass(card) + (selected ? " selected" : "");
+      div.dataset.id = card.id;
+
+      const rank = document.createElement("div");
+      rank.className = "rank";
+      rank.textContent = (card.type==="joker") ? "★" : (card.rank);
+      div.appendChild(rank);
+
+      const corner = document.createElement("div");
+      corner.className = "corner";
+      corner.textContent = (card.type==="joker") ? "JOKER" : card.suit;
+      div.appendChild(corner);
+
+      return div;
+    }
+
+    function render(){
+      $("turnName").textContent = state.players[state.turn].name;
+      $("deckCount").textContent = state.deck.length;
+      $("midCount").textContent = state.middle.length;
+
+      // Circle button disabled if already have a picked
+      const circle = $("circleBtn");
+      if(state.picked) circle.classList.add("disabled");
+      else circle.classList.remove("disabled");
+
+      // Picked slot
+      const slot = $("pickedSlot");
+      slot.innerHTML = "";
+      if(!state.picked){
+        const hint = document.createElement("div");
+        hint.className = "hint";
+        hint.textContent = "No picked card yet.";
+        slot.appendChild(hint);
+      } else {
+        slot.appendChild(renderCard(state.picked, {selected:false}));
+      }
+
+      // Middle
+      const mid = $("middleRow");
+      mid.innerHTML = "";
+      state.middle.forEach(c=>{
+        const selected = state.selectedIds.has(c.id);
+        const node = renderCard(c,{selected});
+        node.addEventListener("click", ()=>{
+          if(!state.picked) return;
+          if(state.selectedIds.has(c.id)) state.selectedIds.delete(c.id);
+          else state.selectedIds.add(c.id);
+          updateSelectionUI();
+        });
+        mid.appendChild(node);
+      });
+
+      // Players
+      const pbox = $("playersBox");
+      pbox.innerHTML = "";
+      state.players.forEach((p, idx)=>{
+        const card = document.createElement("div");
+        card.className = "stat";
+        card.innerHTML = `
+          <div class="name">${idx===state.turn ? "▶ " : ""}${p.name}</div>
+          <div class="meta">Cards collected: <b>${p.pile.length}</b></div>
+        `;
+        pbox.appendChild(card);
+      });
+
+      updateSelectionUI();
+    }
+
+    function updateSelectionUI(){
+      // Sum selection
+      let sum = 0;
+      const selectedCards = state.middle.filter(c=>state.selectedIds.has(c.id));
+      selectedCards.forEach(c=> sum += addValue(c));
+      $("selSum").textContent = sum;
+
+      // Buttons enabled
+      const hasPicked = !!state.picked;
+      $("btnClear").disabled = !hasPicked || state.selectedIds.size===0;
+
+      // Match enabled if any selected and picked exists
+      $("btnMatch").disabled = !hasPicked || state.selectedIds.size===0;
+
+      // Add enabled if picked is numeric (A or 2-10) AND selected 2+ cards
+      const canAdd = hasPicked && isNumericCard(state.picked) && selectedCards.length >= 2;
+      $("btnAdd").disabled = !canAdd;
+
+      // Update picked slot also clickable? (no)
+      render(); // NOTE: render already calls updateSelectionUI -> avoid recursion
+    }
+
+    // IMPORTANT: prevent recursion
+    const _render = render;
+    render = function(){
+      $("turnName").textContent = state.players[state.turn].name;
+      $("deckCount").textContent = state.deck.length;
+      $("midCount").textContent = state.middle.length;
+
+      const circle = $("circleBtn");
+      if(state.picked) circle.classList.add("disabled");
+      else circle.classList.remove("disabled");
+
+      const slot = $("pickedSlot");
+      slot.innerHTML = "";
+      if(!state.picked){
+        const hint = document.createElement("div");
+        hint.className = "hint";
+        hint.textContent = "No picked card yet.";
+        slot.appendChild(hint);
+      } else {
+        slot.appendChild(renderCard(state.picked, {selected:false}));
+      }
+
+      const mid = $("middleRow");
+      mid.innerHTML = "";
+      state.middle.forEach(c=>{
+        const selected = state.selectedIds.has(c.id);
+        const node = renderCard(c,{selected});
+        node.addEventListener("click", ()=>{
+          if(!state.picked) return;
+          if(state.selectedIds.has(c.id)) state.selectedIds.delete(c.id);
+          else state.selectedIds.add(c.id);
+          updateSelectionNoRender();
+          render(); // re-render to show selection class
+        });
+        mid.appendChild(node);
+      });
+
+      const pbox = $("playersBox");
+      pbox.innerHTML = "";
+      state.players.forEach((p, idx)=>{
+        const card = document.createElement("div");
+        card.className = "stat";
+        card.innerHTML = `
+          <div class="name">${idx===state.turn ? "▶ " : ""}${p.name}</div>
+          <div class="meta">Cards collected: <b>${p.pile.length}</b></div>
+        `;
+        pbox.appendChild(card);
+      });
+
+      updateSelectionNoRender();
+    }
+
+    function updateSelectionNoRender(){
+      let sum = 0;
+      const selectedCards = state.middle.filter(c=>state.selectedIds.has(c.id));
+      selectedCards.forEach(c=> sum += addValue(c));
+      $("selSum").textContent = sum;
+
+      const hasPicked = !!state.picked;
+      $("btnClear").disabled = !hasPicked || state.selectedIds.size===0;
+      $("btnMatch").disabled = !hasPicked || state.selectedIds.size===0;
+
+      const canAdd = hasPicked && isNumericCard(state.picked) && selectedCards.length >= 2;
+      $("btnAdd").disabled = !canAdd;
+    }
+
+    // ========= Log =========
+    function logMsg(html){
+      const item = document.createElement("div");
+      item.className="logItem";
+      item.innerHTML = html;
+      const log = $("log");
+      log.prepend(item);
+    }
+    function logClear(){
+      $("log").innerHTML = "";
+    }
+
+    // ========= Actions =========
+    function currentPlayer(){ return state.players[state.turn]; }
+
+    function drawCard(){
+      if(state.picked) return;
+      if(state.deck.length===0){
+        logMsg(`<strong>Circle is empty.</strong> Game over soon — last turns only.`);
+        return;
+      }
+      state.picked = state.deck.pop();
+      state.selectedIds.clear();
+      state.capturedThisTurn = false;
+
+      if(state.picked.type==="joker"){
+        // Joker: collect everyone's piles + all middle + the joker itself
+        const taker = currentPlayer();
+        let taken = 0;
+
+        // take middle
+        taken += state.middle.length;
+        taker.pile.push(...state.middle);
+        state.middle = [];
+
+        // take everyone's piles
+        state.players.forEach(p=>{
+          if(p!==taker){
+            taken += p.pile.length;
+            taker.pile.push(...p.pile);
+            p.pile = [];
+          }
+        });
+
+        // take the joker card itself
+        taker.pile.push(state.picked);
+        state.picked = null;
+
+        logMsg(`<strong>${taker.name}</strong> drew a <strong>JOKER</strong> and collected <strong>everything</strong> (taken cards: <b>${taken}</b> + Joker).`);
+        // turn ends after joker
+        endTurn(true);
+        return;
+      }
+
+      logMsg(`<strong>${currentPlayer().name}</strong> picked <strong>${cardLabel(state.picked)}</strong>. Select Middle cards, then CAPTURE.`);
+      render();
+    }
+
+    function clearSelection(){
+      state.selectedIds.clear();
+      render();
+    }
+
+    function captureMatch(){
+      if(!state.picked) return;
+      const selected = state.middle.filter(c=>state.selectedIds.has(c.id));
+      if(selected.length===0){
+        logMsg(`Select at least 1 Middle card for MATCH.`);
+        return;
+      }
+
+      // all selected must match rank exactly
+      const ok = selected.every(c=> c.rank === state.picked.rank);
+      if(!ok){
+        logMsg(`❌ MATCH failed. Selected cards must all match the picked rank (<strong>${state.picked.rank}</strong>).`);
+        return;
+      }
+
+      // remove selected from middle
+      state.middle = state.middle.filter(c=> !state.selectedIds.has(c.id));
+
+      currentPlayer().pile.push(...selected);
+      state.selectedIds.clear();
+      state.capturedThisTurn = true;
+
+      logMsg(`✅ <strong>${currentPlayer().name}</strong> MATCH captured <b>${selected.length}</b> card(s). You can capture again with the same picked card, then END TURN.`);
+      render();
+    }
+
+    function captureAdd(){
+      if(!state.picked) return;
+      if(!isNumericCard(state.picked)){
+        logMsg(`ADD only works when the picked card is A or 2–10.`);
+        return;
+      }
+
+      const selected = state.middle.filter(c=>state.selectedIds.has(c.id));
+      if(selected.length < 2){
+        logMsg(`Select <strong>2 or more</strong> Middle cards to ADD.`);
+        return;
+      }
+
+      const target = addValue(state.picked);
+      const sum = selected.reduce((a,c)=>a+addValue(c),0);
+
+      if(sum !== target){
+        logMsg(`❌ ADD failed. Selected sum is <b>${sum}</b> but picked is <b>${target}</b>.`);
+        return;
+      }
+
+      // success: remove selected from middle, add to pile
+      state.middle = state.middle.filter(c=> !state.selectedIds.has(c.id));
+      currentPlayer().pile.push(...selected);
+      state.selectedIds.clear();
+      state.capturedThisTurn = true;
+
+      logMsg(`✅ <strong>${currentPlayer().name}</strong> ADD captured <b>${selected.length}</b> card(s) (sum ${sum}). You can capture again with the same picked card, then END TURN.`);
+      render();
+    }
+
+    function endTurn(forceAdvance=false){
+      // If no picked and we’re just advancing (joker already resolved), do it
+      if(!state.picked && forceAdvance){
+        state.turn = (state.turn + 1) % state.players.length;
+        render();
+        return;
+      }
+
+      // must have picked to end normally
+      if(!state.picked){
+        logMsg(`Pick a card first.`);
+        return;
+      }
+
+      const p = currentPlayer();
+
+      if(state.capturedThisTurn){
+        // bank the picked card once
+        p.pile.push(state.picked);
+        logMsg(`<strong>${p.name}</strong> ends turn and banks picked card <strong>${cardLabel(state.picked)}</strong>.`);
+      } else {
+        // cannot play -> goes to middle
+        state.middle.push(state.picked);
+        logMsg(`<strong>${p.name}</strong> could not play <strong>${cardLabel(state.picked)}</strong>, so it goes to the Middle.`);
+      }
+
+      state.picked = null;
+      state.selectedIds.clear();
+      state.capturedThisTurn = false;
+
+      // if circle empty, we still rotate turns, but game will “naturally” end when nothing left to draw
+      state.turn = (state.turn + 1) % state.players.length;
+      render();
+    }
+
+    // ========= Wire up =========
+    $("circleBtn").addEventListener("click", ()=>{
+      if($("circleBtn").classList.contains("disabled")) return;
+      drawCard();
+    });
+    $("btnClear").addEventListener("click", clearSelection);
+    $("btnMatch").addEventListener("click", captureMatch);
+    $("btnAdd").addEventListener("click", captureAdd);
+    $("btnEnd").addEventListener("click", ()=>endTurn(false));
+    $("btnNew").addEventListener("click", resetGame);
+
+    // Start
+    resetGame();
+  </script>
 </body>
 </html>
