@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<<<<<<< HEAD
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Injera Be Wat — Prototype (Visual Layered)</title>
 
@@ -35,11 +36,30 @@
       --good:#7cffb2;
       --bad:#ff6fb1;
       --warn:#ffd166;
+=======
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Injera Be Wat — Prototype</title>
 
-      --good:#7cffb2;
-      --bad:#ff6fb1;
-      --warn:#ffd166;
+<style>
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background:#0b0f14;
+    color:#eaf0ff;
+    padding:20px;
+  }
 
+  h1{margin:0 0 6px}
+  .sub{color:#b6c2e3;margin-bottom:16px}
+>>>>>>> parent of 2241160 (Fix setup Joker redraw + add end-game scoring)
+
+  .board{
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+
+<<<<<<< HEAD
       --shadow: 0 18px 60px rgba(0,0,0,.55);
       --r: 18px;
     }
@@ -207,470 +227,254 @@ header:after{
     }
     .circleBtn.disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.2)}
     .circleBtn:hover:not(.disabled){transform: translateY(-1px);}
+=======
+  .left{
+    flex:1;
+    min-width:320px;
+  }
 
-    /* Card UI */
-    .card{
-      width:96px;height:132px;
-      border-radius:16px;
-      position:relative;
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow: 0 16px 40px rgba(0,0,0,.40);
-      overflow:hidden;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.12), transparent 35%),
-        radial-gradient(120px 120px at 20% 20%, rgba(247,211,106,.35), transparent 60%),
-        radial-gradient(140px 140px at 80% 80%, rgba(29,78,216,.25), transparent 62%),
-        linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,255,255,.78));
-      color:#0a0f16;
-      user-select:none;
-    }
-    .card:before{
-      content:"";
-      position:absolute;left:0;top:0;right:0;height:18px;
-      background: linear-gradient(90deg, var(--eth-green), var(--eth-yellow), var(--eth-red));
-      opacity:.95;
-    }
-    .card:after{
-      content:"";
-      position:absolute;inset:0;
-      background:
-        radial-gradient(circle at 50% 58%, rgba(214,40,40,.10), transparent 55%),
-        repeating-linear-gradient(45deg, rgba(15,122,58,.08), rgba(15,122,58,.08) 6px, rgba(255,209,102,.08) 6px, rgba(255,209,102,.08) 12px);
-      mix-blend-mode:multiply;
-      opacity:.55;
-      pointer-events:none;
-    }
+  .right{
+    width:300px;
+  }
 
-    .card .rank{
-      position:absolute;left:10px;top:26px;
-      font-size:30px;
-      font-weight:900;
-      letter-spacing:.5px;
-      text-shadow: 0 2px 0 rgba(255,255,255,.35);
-    }
-    .card .corner{
-      position:absolute;right:10px;bottom:10px;
-      font-size:14px;
-      font-weight:800;
-      opacity:.85;
-    }
+  .zoneTitle{
+    font-weight:900;
+    margin:12px 0 8px;
+  }
 
-    .card.face{
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.14), transparent 35%),
-        radial-gradient(160px 160px at 25% 25%, rgba(29,78,216,.22), transparent 62%),
-        radial-gradient(180px 180px at 80% 80%, rgba(247,211,106,.26), transparent 62%),
-        linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,255,255,.76));
-    }
-    .card.joker{
-      color:#120818;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.12), transparent 35%),
-        radial-gradient(160px 160px at 30% 25%, rgba(214,40,40,.20), transparent 62%),
-        radial-gradient(180px 180px at 80% 80%, rgba(247,211,106,.28), transparent 62%),
-        linear-gradient(135deg, rgba(220,200,255,.92), rgba(250,230,255,.78));
-    }
+  .circleBtn{
+    width:140px;
+    height:190px;
+    border-radius:18px;
+    background:#1f2937;
+    display:grid;
+    place-items:center;
+    cursor:pointer;
+    font-weight:900;
+    letter-spacing:1px;
+    border:2px solid #334155;
+  }
 
-    .card.selected{
-      outline:3px solid rgba(247,211,106,.75);
-      transform: translateY(-2px);
-      box-shadow: 0 20px 60px rgba(0,0,0,.55);
-    }
+  .circleBtn.disabled{
+    opacity:.4;
+    cursor:not-allowed;
+  }
 
-    .zoneTitle{
-      font-size:18px;
-      font-weight:900;
-      margin:0 0 10px;
-    }
+  .pickedSlot{
+    width:100px;
+    height:140px;
+    border:2px dashed #334155;
+    display:grid;
+    place-items:center;
+    margin-bottom:10px;
+  }
 
-    .pickedWrap{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      min-width:240px;
-    }
-    .pickedSlot{
-      height:140px;
-      border-radius:18px;
-      border:1px dashed rgba(255,255,255,.22);
-      display:grid;
-      place-items:center;
-      background: rgba(0,0,0,.18);
-      color:var(--muted);
-      position:relative;
-      overflow:hidden;
-      padding:10px;
-      text-align:center;
-    }
-    .pickedSlot .hint{
-      font-size:12px;
-      opacity:.9;
-      line-height:1.25;
-    }
+  .row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
 
-    .controls{
-      display:flex;flex-wrap:wrap;gap:10px;align-items:center;
-      margin-top:6px;
-    }
-    button{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      color: var(--text);
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:800;
-      letter-spacing:.2px;
-    }
-    button:hover{filter:brightness(1.05)}
-    button.primary{
-      background: linear-gradient(135deg, rgba(15,122,58,.55), rgba(255,209,102,.22));
-      border-color: rgba(124,255,178,.25);
-    }
-    button.danger{
-      background: linear-gradient(135deg, rgba(214,40,40,.42), rgba(255,111,177,.18));
-      border-color: rgba(255,111,177,.25);
-    }
-    button.warn{
-      background: linear-gradient(135deg, rgba(255,209,102,.35), rgba(29,78,216,.12));
-      border-color: rgba(255,209,102,.35);
-    }
-    button:disabled{
-      opacity:.45;cursor:not-allowed;filter:grayscale(.2);
-    }
+  .card{
+    width:80px;
+    height:110px;
+    border-radius:12px;
+    background:#f9fafb;
+    color:#0b1220;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 6px 14px rgba(0,0,0,.4);
+  }
+>>>>>>> parent of 2241160 (Fix setup Joker redraw + add end-game scoring)
 
-    .log{
-      height:360px;
-      overflow:auto;
-      padding-right:6px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .logItem{
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.18);
-      border-radius:14px;
-      padding:10px 12px;
-      color:var(--muted);
-      line-height:1.35;
-      font-size:13px;
-    }
-    .logItem strong{color:var(--text)}
+  .card.selected{
+    outline:4px solid #facc15;
+    transform:translateY(-2px);
+  }
 
-    .small{font-size:12px;color:var(--muted)}
-    .statRow{display:flex;gap:10px;flex-wrap:wrap}
-    .stat{border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.18); border-radius:14px; padding:10px 12px; min-width:200px}
-    .stat .name{font-weight:900}
-    .stat .meta{font-size:13px;color:var(--muted);margin-top:4px}
-    .stat .meta b{color:var(--text)}
+  button{
+    margin-top:8px;
+    padding:8px 10px;
+    font-weight:800;
+    cursor:pointer;
+  }
 
-    /* Modals */
-    .modal{
-      position:fixed;inset:0;
-      background: rgba(0,0,0,.55);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      z-index:999;
-    }
-    .modal.show{display:flex}
-    .modalCard{
-      width:min(900px, 100%);
-      border:1px solid rgba(255,255,255,.14);
-      border-radius:20px;
-      background: linear-gradient(135deg, rgba(10,18,30,.92), rgba(6,12,20,.82));
-      box-shadow: 0 22px 80px rgba(0,0,0,.65);
-      overflow:hidden;
-    }
-    .modalHd{
-      padding:14px 16px;
-      border-bottom:1px solid rgba(255,255,255,.12);
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .modalHd .title{font-weight:900;font-size:18px}
-    .modalBd{padding:16px}
-    .modalGrid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:14px;
-    }
-    .box{
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:16px;
-      background: rgba(0,0,0,.18);
-      padding:14px;
-    }
-    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
-    select,input{
-      width:100%;
-      padding:10px 12px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.22);
-      color: var(--text);
-      outline:none;
-    }
-    .modalActions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.35}
+  button:disabled{
+    opacity:.4;
+    cursor:not-allowed;
+  }
 
-    .scoreRow{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      padding:10px 12px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(0,0,0,.16);
-      border-radius:14px;
-      margin-bottom:10px;
-    }
-    .winner{
-      outline:3px solid rgba(247,211,106,.65);
-      box-shadow: 0 18px 60px rgba(0,0,0,.55);
-    }
-    .scoreLeft{font-weight:900}
-    .scoreRight{color:var(--muted)}
-    .scoreRight b{color:var(--text)}
-    .bigWin{
-      font-size:22px;
-      font-weight:900;
-      margin:0 0 10px;
-    }
+  .log{
+    background:#020617;
+    border:1px solid #334155;
+    padding:10px;
+    height:260px;
+    overflow:auto;
+    font-size:13px;
+  }
 
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
-      .log{height:260px}
-      .modalGrid{grid-template-columns:1fr}
-    }
-  </style>
+  .log div{margin-bottom:6px}
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Injera Be Wat</h1>
-      <div class="sub">
-        <b>Setup:</b> Each player draws <b>1 starter card</b> (auto-banked). If a Joker is drawn, it goes back into the Circle randomly and you draw again.<br/>
-        Then players seed the Middle with <b>3 draws</b> (Jokers also go back randomly during seeding).<br/>
-        <b>Play:</b> Pick from Circle. Capture from Middle by <b>MATCH</b> or <b>ADD</b> (2+ cards sum to picked value).<br/>
-        <b>End:</b> When the last Circle card is picked, the last picker takes any remaining Middle cards, then score.
-      </div>
-    </header>
 
-    <div class="grid">
-      <!-- MAIN -->
-      <section class="panel">
-        <div class="hd">
-          <div class="pill"><b>Turn:</b> <span id="turnName"></span></div>
-          <div class="pill"><b>Phase:</b> <span id="phaseLabel"></span></div>
-          <div class="pill">Circle: <b id="deckCount"></b></div>
-          <div class="pill">Middle: <b id="midCount"></b></div>
-          <div class="pill">Selected sum: <b id="selSum">0</b></div>
-        </div>
+<h1>Injera Be Wat</h1>
+<div class="sub">
+Pick from the Circle. Add or Match from the Middle. Capture as much as you can before ending your turn.
+</div>
 
-        <div class="bd">
-          <div class="row center" style="justify-content:space-between;gap:18px;">
-            <div class="row center" style="gap:18px;">
-              <div>
-                <div class="zoneTitle">Circle</div>
-                <div id="circleBtn" class="circleBtn">
-                  <div class="mini">draw</div>
-                  <div class="label">PICK</div>
-                </div>
-                <div class="small" style="margin-top:8px;" id="circleHint"></div>
-              </div>
+<div class="board">
+  <div class="left">
 
-              <div class="pickedWrap">
-                <div class="zoneTitle">Picked</div>
-                <div class="pickedSlot" id="pickedSlot"></div>
+    <div class="zoneTitle">Circle</div>
+    <div id="circleBtn" class="circleBtn">PICK</div>
 
-                <div class="controls">
-                  <button id="btnMatch" disabled>CAPTURE (MATCH)</button>
-                  <button id="btnAdd" disabled>CAPTURE (ADD)</button>
-                  <button id="btnClear" disabled>CLEAR</button>
-                  <button id="btnEnd" class="danger">END TURN</button>
-                  <button id="btnEndGame" class="warn" disabled>END GAME</button>
-                  <button id="btnNew" class="primary">NEW GAME</button>
-                </div>
+    <div class="zoneTitle">Picked</div>
+    <div id="pickedSlot" class="pickedSlot">—</div>
 
-                <div class="small" id="tip" style="margin-top:6px;"></div>
-              </div>
-            </div>
+    <button id="btnMatch" disabled>MATCH</button>
+    <button id="btnAdd" disabled>ADD</button>
+    <button id="btnClear" disabled>CLEAR</button>
+    <button id="btnEnd">END TURN</button>
 
-            <div style="flex:1;min-width:280px;">
-              <div class="zoneTitle">Middle (tap cards to select)</div>
-              <div class="row" id="middleRow" style="gap:12px;flex-wrap:wrap;"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- RIGHT -->
-      <aside class="panel">
-        <div class="hd">
-          <div style="font-weight:900;font-size:18px;">Players</div>
-          <div class="pill">Score counts at end</div>
-        </div>
-        <div class="bd">
-          <div class="statRow" id="playersBox"></div>
-
-          <div style="margin-top:14px;font-weight:900;font-size:18px;">Log</div>
-          <div class="log" id="log"></div>
-        </div>
-      </aside>
-    </div>
+    <div class="zoneTitle">Middle</div>
+    <div id="middleRow" class="row"></div>
   </div>
 
-  <!-- Start Modal -->
-  <div class="modal show" id="startModal">
-    <div class="modalCard">
-      <div class="modalHd">
-        <div class="title">Start Injera Be Wat</div>
-        <button id="btnCloseModal">Close</button>
-      </div>
-      <div class="modalBd">
-        <div class="modalGrid">
-          <div class="box">
-            <label>How many players?</label>
-            <select id="playerCount">
-              <option value="2">2 Players (Pass &amp; Play)</option>
-              <option value="3" selected>3 Players (Pass &amp; Play)</option>
-            </select>
-            <div class="note">
-              Setup is Joker-safe: Joker goes back into the Circle randomly, then draw again.
-            </div>
-          </div>
-
-          <div class="box">
-            <label>Player names (optional)</label>
-            <div style="display:grid;gap:10px;">
-              <input id="name1" placeholder="Player 1 name" />
-              <input id="name2" placeholder="Player 2 name" />
-              <input id="name3" placeholder="Player 3 name (only for 3 players)" />
-            </div>
-            <div class="modalActions">
-              <button class="primary" id="btnStartGame">START</button>
-              <button id="btnResetDefaults">Reset names</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="note">
-          <b>Scoring (end only):</b> 1–10 = 1 point each • J/Q/K = 10 points • Joker = 1 point
-        </div>
-      </div>
-    </div>
+  <div class="right">
+    <div class="zoneTitle">Log</div>
+    <div id="log" class="log"></div>
   </div>
+</div>
 
-  <!-- Score Modal -->
-  <div class="modal" id="scoreModal">
-    <div class="modalCard">
-      <div class="modalHd">
-        <div class="title">Game Over — Final Scores</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button id="btnCloseScore">Close</button>
-          <button class="primary" id="btnNewFromScore">NEW GAME</button>
-        </div>
-      </div>
-      <div class="modalBd">
-        <p class="bigWin" id="winnerLine"></p>
-        <div id="scoreBoard"></div>
-        <div class="note" id="scoreRulesNote"></div>
-      </div>
-    </div>
-  </div>
+<script>
+const $ = id => document.getElementById(id);
 
-  <script>
-    // ========= Helpers =========
-    const $ = (id)=>document.getElementById(id);
-    const suits = ["♠","♥","♦","♣"];
+let deck = [];
+let middle = [];
+let picked = null;
+let selected = new Set();
+let capturedThisTurn = false;
 
-    function shuffle(arr){
-      for(let i=arr.length-1;i>0;i--){
-        const j = Math.floor(Math.random()*(i+1));
-        [arr[i],arr[j]] = [arr[j],arr[i]];
-      }
-      return arr;
-    }
+function log(msg){
+  const d = document.createElement("div");
+  d.innerHTML = msg;
+  $("log").prepend(d);
+}
 
-    function isNumericCard(card){
-      return card.rank === "A" || (typeof card.rank === "number" && card.rank>=2 && card.rank<=10);
-    }
+function newDeck(){
+  const d=[];
+  for(let i=1;i<=10;i++){
+    for(let j=0;j<4;j++) d.push(i);
+  }
+  d.push("JOKER","JOKER");
+  return d.sort(()=>Math.random()-.5);
+}
 
-    function addValue(card){
-      // For ADD comparisons only (A=1, 2-10=number)
-      if(card.rank === "A") return 1;
-      if(typeof card.rank === "number") return card.rank;
-      return 10;
-    }
+function start(){
+  deck = newDeck();
+  middle = [deck.pop(), deck.pop(), deck.pop()];
+  picked = null;
+  selected.clear();
+  log("New game started.");
+  render();
+}
 
-    // ======= YOUR SCORING RULES (END ONLY) =======
-    // 1–10 = 1 point each (A counts as 1)
-    // J/Q/K = 10 points each
-    // Joker = 1 point
-    function cardPoints(card){
-      if(card.type === "joker") return 1;
-      if(card.type === "face") return 10;
-      return 1;
-    }
-    function playerPoints(player){
-      return player.pile.reduce((sum,c)=>sum + cardPoints(c), 0);
-    }
+function render(){
+  $("circleBtn").classList.toggle("disabled", !!picked);
+  $("pickedSlot").innerHTML = picked ?? "—";
 
-    // ========= Game State =========
-    let state;
-
-    function newDeck(){
-      const deck = [];
-      for(const s of suits){
-        deck.push({rank:"A", suit:s, type:"num", id:crypto.randomUUID()});
-        for(let n=2;n<=10;n++){
-          deck.push({rank:n, suit:s, type:"num", id:crypto.randomUUID()});
-        }
-        ["J","Q","K"].forEach(r=> deck.push({rank:r, suit:s, type:"face", id:crypto.randomUUID()}));
-      }
-      deck.push({rank:"JOKER", suit:"", type:"joker", id:crypto.randomUUID()});
-      deck.push({rank:"JOKER", suit:"", type:"joker", id:crypto.randomUUID()});
-      return shuffle(deck);
-    }
-
-    function makePlayers(count, names){
-      const players = [];
-      for(let i=0;i<count;i++){
-        players.push({name: names[i] || `Player ${i+1}`, pile:[]});
-      }
-      return players;
-    }
-
-    function resetGame(playerCount=3, names=["Player 1","Player 2","Player 3"]){
-      state = {
-        players: makePlayers(playerCount, names),
-        turn: 0,
-        deck: newDeck(),
-        middle: [],
-        picked: null,
-        selectedIds: new Set(),
-        capturedThisTurn: false,
-
-        phase: "starter",          // "starter" -> "seed" -> "play"
-        starterRemaining: playerCount,
-        seedRemaining: 3,          // seed the middle with 3 draws
-        finalDrawnBy: null,        // index of last player who picked final circle card
-      };
-
-      logClear();
-      logMsg(`<strong>New game started.</strong> Setup begins now.`);
-      logMsg(`<strong>Setup step 1:</strong> Each player draws <strong>1 starter card</strong> (auto-banked). Joker goes back randomly; same player draws again.`);
+  const mid = $("middleRow");
+  mid.innerHTML="";
+  middle.forEach((v,i)=>{
+    const c=document.createElement("div");
+    c.className="card"+(selected.has(i)?" selected":"");
+    c.textContent=v;
+    c.onclick=()=>{
+      if(!picked) return;
+      selected.has(i)?selected.delete(i):selected.add(i);
+      updateButtons();
       render();
-    }
+    };
+    mid.appendChild(c);
+  });
 
+  updateButtons();
+}
+
+function updateButtons(){
+  $("btnClear").disabled = selected.size===0;
+  $("btnMatch").disabled = !picked || selected.size===0;
+  $("btnAdd").disabled = !picked || selected.size<2 || typeof picked!=="number";
+}
+
+$("circleBtn").onclick=()=>{
+  if(picked || deck.length===0) return;
+  picked = deck.pop();
+  selected.clear();
+  capturedThisTurn=false;
+
+  if(picked==="JOKER"){
+    middle=[];
+    picked=null;
+    log("JOKER! Middle cleared.");
+    return;
+  }
+
+  log("Picked "+picked);
+  render();
+};
+
+$("btnClear").onclick=()=>{
+  selected.clear();
+  render();
+};
+
+$("btnMatch").onclick=()=>{
+  const sel=[...selected];
+  if(sel.every(i=>middle[i]===picked)){
+    sel.sort((a,b)=>b-a).forEach(i=>middle.splice(i,1));
+    selected.clear();
+    capturedThisTurn=true;
+    log("MATCH captured.");
+    render();
+  }else{
+    log("MATCH failed.");
+  }
+};
+
+$("btnAdd").onclick=()=>{
+  const sum=[...selected].reduce((a,i)=>a+middle[i],0);
+  if(sum===picked){
+    [...selected].sort((a,b)=>b-a).forEach(i=>middle.splice(i,1));
+    selected.clear();
+    capturedThisTurn=true;
+    log("ADD captured.");
+    render();
+  }else{
+    log("ADD failed.");
+  }
+};
+
+$("btnEnd").onclick=()=>{
+  if(!picked) return;
+  if(!capturedThisTurn){
+    middle.push(picked);
+    log("No capture. Card goes to middle.");
+  }
+  picked=null;
+  selected.clear();
+  render();
+};
+
+start();
+</script>
+
+<<<<<<< HEAD
     // ===== Setup Joker rule helpers =====
     function putBackJokerRandomly(card){
       const pos = Math.floor(Math.random() * (state.deck.length + 1));
@@ -1156,5 +960,7 @@ header:after{
     resetGame(3, ["Player 1","Player 2","Player 3"]);
   </script>
 >>>>>>> parent of 6fe9553 (Baseline: gameplay stable with chain captures and setup rules)
+=======
+>>>>>>> parent of 2241160 (Fix setup Joker redraw + add end-game scoring)
 </body>
 </html>
