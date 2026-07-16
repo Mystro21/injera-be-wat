@@ -1,0 +1,1 @@
+export function Logo() { return <div className="logo" aria-label="Injera Be Wat"><span className="logo-mark"><i aria-hidden="true">8</i><b>IBW</b></span><span><strong>Injera Be Wat</strong><small>THE MESOB STUDY CLUB</small></span></div>; }
