@@ -115,8 +115,10 @@ export function GameBoard({ game, onDraw, selectedMiddleIds, onMiddleSelect, onP
         {game.ring.map((card, index) => {
           const total = game.ring.length;
           const angle = (360 / Math.max(total, 1)) * index - 90;
-          const radius = Math.min(29, 17 + total / 7);
-          const mobileRadius = total > 72 ? 'clamp(128px, 24.5vw, 154px)' : total > 36 ? 'clamp(116px, 23vw, 145px)' : 'clamp(92px, 19vw, 118px)';
+          // Keep one full-size Circle throughout the match. As cards leave,
+          // the same circumference is divided between fewer cards so gaps grow.
+          const radius = 29;
+          const mobileRadius = 'clamp(128px, 24.5vw, 154px)';
           return <CardView key={card.id} card={card} faceDown className={`ring-card ${total > 36 ? 'dense-ring' : ''} single-ring`} label={canPickCircleCard ? `Draw card ${index + 1} from the Circle` : game.room === 'rush' && canDraw ? 'Spin the table to draw this face-down card' : 'Face-down Circle card'} onClick={canPickCircleCard ? () => onDraw(card.id) : undefined} style={{ '--angle': `${angle}deg`, '--radius': `${radius}vmin`, '--mobile-radius': mobileRadius, '--ring-z': 1 } as React.CSSProperties} />;
         })}
       </div>
