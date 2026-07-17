@@ -464,3 +464,34 @@ body { color:var(--ink); background:#d9c59d; background-image:linear-gradient(90
   .table-wrap.classroom-desk:before { background-size:100% 3px; }
   .classroom-desk .game-table { box-shadow:0 0 0 4px #fff1ae,0 0 0 8px #a36d24,0 0 0 12px #f4cf6a,0 0 0 18px #28150d,0 0 0 22px #8f5b24,0 0 0 26px #e8bd55,0 18px 38px rgba(0,0,0,.58)!important; }
 }
+
+/* Mobile card legibility: keep the 102-card ring compact, enlarge playable cards. */
+@media (max-width:600px) {
+  .classroom-desk .wot { inset:27%; }
+  .center-cards { max-width:112px;gap:5px; }
+  .center-cards .playing-card { width:48px;height:69px;border-width:2px;border-bottom-width:5px; }
+  .center-cards .card-face:before { inset:4px; }
+  .center-cards .card-corner b { font-size:12px; }
+  .center-cards .card-corner i { font-size:10px; }
+  .center-cards .card-corner-top { top:7px;left:4px; }
+  .center-cards .card-corner-bottom { right:4px;bottom:7px; }
+  .center-cards .card-rank { font-size:21px; }
+  .center-cards .card-suit { font-size:23px; }
+  .center-cards .card-center small { font-size:6px; }
+  .drawn-card .playing-card { width:52px;height:75px; }
+  .drawn-card .card-corner b { font-size:13px; }
+  .drawn-card .card-corner i { font-size:10px; }
+  .drawn-card .card-rank { font-size:22px; }
+  .drawn-card .card-suit { font-size:24px; }
+  .player-pile-top.playing-card { width:44px;height:62px; }
+  .visible-pile:before,.visible-pile:after { width:44px;height:62px; }
+  .visible-pile>i { right:calc(50% - 32px);font-size:8px; }
+  .center-cards .middle-selected { translate:0 -7px;outline-width:4px!important; }
+}
+
+@media (orientation:landscape) and (max-height:600px) and (max-width:950px) {
+  .classroom-desk .wot { inset:28%; }
+  .center-cards { max-width:104px;gap:4px; }
+  .center-cards .playing-card { width:45px;height:65px; }
+  .drawn-card .playing-card { width:48px;height:69px; }
+}
