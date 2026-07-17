@@ -495,3 +495,20 @@ body { color:var(--ink); background:#d9c59d; background-image:linear-gradient(90
   .center-cards .playing-card { width:45px;height:65px; }
   .drawn-card .playing-card { width:48px;height:69px; }
 }
+
+/* End-game card count and point breakdown */
+.results-row .score-breakdown { display:flex;flex-direction:column;align-items:flex-start;gap:3px;color:#fff6d8;font-weight:800; }
+.results-row .score-breakdown small { color:#d9c98f;font-size:8px;font-weight:700;letter-spacing:.3px; }
+.results-row>strong { color:#ffe07b;font:800 24px 'Fraunces',serif; }
+
+@media (max-width:760px) {
+  .results-screen { justify-content:flex-start;overflow:auto; }
+  .results-table { overflow:visible;border-width:7px;background:transparent; }
+  .results-row.header { display:none; }
+  .results-row { grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;min-height:0;margin:0;padding:15px;background:#28543f;border:0;border-bottom:2px solid rgba(255,255,255,.13); }
+  .results-row>*:nth-child(n+4) { display:flex; }
+  .results-row>span:first-child { grid-column:1/-1;padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,.14);font:700 18px 'Fraunces',serif; }
+  .results-row>strong,.results-row>span:not(:first-child) { position:relative;display:flex;flex-direction:column;align-items:flex-start;min-height:54px;padding:20px 10px 8px;border-radius:6px;background:rgba(5,34,23,.32); }
+  .results-row>strong:before,.results-row>span:not(:first-child):before { content:attr(data-label);position:absolute;left:10px;top:7px;color:#d8c88f;font:800 7px 'DM Sans',sans-serif;letter-spacing:.8px;text-transform:uppercase; }
+  .results-row .score-breakdown small { font-size:9px; }
+}

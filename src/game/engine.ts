@@ -72,5 +72,24 @@ export function applyMove(state: GameState, optionChoice: string | CaptureOption
   return finishLastDraw({ ...state, center: state.center.filter((card) => !captureIds.has(card.id)), players, turn: { phase: 'draw', captureOptions: [], message: `${current.name} captured and picks again` } });
 }
 
-export function calculateFinalScores(state: GameState) { return state.players.map((player) => ({ playerId: player.id, name: player.name, cards: player.captured.length, points: playerPoints(player.captured), stats: player.stats })).sort((a, b) => b.points - a.points); }
+export function calculateFinalScores(state: GameState) {
+  return state.players.map((player) => {
+    const faceCards = player.captured.filter((card) => ['J', 'Q', 'K'].includes(card.rank)).length;
+    const jokers = player.captured.filter((card) => card.rank === 'JOKER').length;
+    const numberCards = player.captured.length - faceCards - jokers;
+    return {
+      playerId: player.id,
+      name: player.name,
+      cards: player.captured.length,
+      numberCards,
+      numberPoints: numberCards,
+      faceCards,
+      facePoints: faceCards * 10,
+      jokers,
+      jokerPoints: jokers,
+      points: playerPoints(player.captured),
+      stats: player.stats,
+    };
+  }).sort((a, b) => b.points - a.points);
+}
 export function isGameOver(state: GameState) { return state.turn.phase === 'game-over'; }
