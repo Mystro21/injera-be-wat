@@ -9,7 +9,7 @@ export function createInitialGame(settings: MatchSettings, seed = Date.now()): G
   const ring = shuffled.slice(4);
   const players: Player[] = Array.from({ length: settings.playerCount }, (_, index) => ({ id: `player-${index}`, name: index === 0 ? settings.playerName.trim() || 'Player' : index === 1 ? 'Teacher Mesob' : `Classmate ${index}`, isHuman: index === 0, captured: [], stats: EMPTY_STATS() }));
   const firstPlayerIndex = Math.floor(random() * players.length);
-  return { ring, center, players, currentPlayerIndex: firstPlayerIndex, firstPlayerIndex, difficulty: settings.difficulty, room: settings.room, sound: settings.sound, hints: settings.hints, reduceMotion: settings.reduceMotion, winnerIds: [], moveNumber: 0, turn: { phase: 'draw', captureOptions: [], message: `${players[firstPlayerIndex].name} begins` } };
+  return { ring, center, players, currentPlayerIndex: firstPlayerIndex, firstPlayerIndex, difficulty: settings.difficulty, room: settings.room, turnSeconds: settings.turnSeconds, sound: settings.sound, hints: settings.hints, reduceMotion: settings.reduceMotion, winnerIds: [], moveNumber: 0, turn: { phase: 'draw', captureOptions: [], message: `${players[firstPlayerIndex].name} begins` } };
 }
 
 export function drawCard(state: GameState, cardId: string): GameState {

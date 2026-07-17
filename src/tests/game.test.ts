@@ -5,16 +5,17 @@ import { applyMove, calculateFinalScores, createInitialGame, drawCard } from '..
 import { Card, EMPTY_STATS, GameState, MatchSettings, Player } from '../game/models';
 import { captureForSelection, cardPoints, findAdditionGroups, findAdditionPairs, findCaptureOptions, findRankMatches, optionForSelection, playerPoints } from '../game/rules';
 
-const settings: MatchSettings = { playerName: 'Tester', playerCount: 2, difficulty: 'hard', room: 'classic', sound: false, hints: false, reduceMotion: true };
+const settings: MatchSettings = { playerName: 'Tester', playerCount: 2, difficulty: 'hard', room: 'classic', turnSeconds: 20, sound: false, hints: false, reduceMotion: true };
 const c = (rank: Card['rank'], id: string = rank, suit: Card['suit'] = 'spades'): Card => ({ id, rank, suit, value: rank === 'A' ? 1 : /^\d+$/.test(rank) ? Number(rank) : null });
 const p = (id: string, captured: Card[] = []): Player => ({ id, name: id, isHuman: id === 'p1', captured, stats: EMPTY_STATS() });
-const state = (center: Card[] = [], captured1: Card[] = [], captured2: Card[] = [], ring: Card[] = [c('2', 'ring-2')]): GameState => ({ ring, center, players: [p('p1', captured1), p('p2', captured2)], currentPlayerIndex: 0, firstPlayerIndex: 0, difficulty: 'hard', room: 'classic', sound: false, hints: false, reduceMotion: true, winnerIds: [], moveNumber: 0, turn: { phase: 'draw', captureOptions: [], message: '' } });
+const state = (center: Card[] = [], captured1: Card[] = [], captured2: Card[] = [], ring: Card[] = [c('2', 'ring-2')]): GameState => ({ ring, center, players: [p('p1', captured1), p('p2', captured2)], currentPlayerIndex: 0, firstPlayerIndex: 0, difficulty: 'hard', room: 'classic', turnSeconds: 20, sound: false, hints: false, reduceMotion: true, winnerIds: [], moveNumber: 0, turn: { phase: 'draw', captureOptions: [], message: '' } });
 
 describe('deck and setup', () => {
   it('creates two 52-card decks and exactly two total Jokers', () => { const deck = createDeck(); expect(deck).toHaveLength(106); expect(deck.filter((card) => card.rank === 'JOKER')).toHaveLength(2); expect(new Set(deck.map((card) => card.id)).size).toBe(106); });
   it('shuffles without missing or duplicating cards', () => { const deck = createDeck(); const shuffled = shuffleDeck(deck, seededRandom(42)); expect(shuffled).not.toEqual(deck); expect(new Set(shuffled.map((card) => card.id))).toEqual(new Set(deck.map((card) => card.id))); });
   it('places four cards in the middle and 102 in the circle', () => { const game = createInitialGame(settings, 8); expect(game.center).toHaveLength(4); expect(game.ring).toHaveLength(102); expect(game.players).toHaveLength(2); });
   it('keeps the selected game room in the match', () => { expect(createInitialGame({ ...settings, room: 'rush' }, 8).room).toBe('rush'); });
+  it('keeps the selected turn timer in the match', () => { expect(createInitialGame({ ...settings, turnSeconds: 30 }, 8).turnSeconds).toBe(30); });
 });
 
 describe('middle captures', () => {
