@@ -143,5 +143,5 @@ export function captureForSelection(state: GameState, selectedIds: string[]): Ca
   return optionFromGroups(groups, `selected-${[...selectedIds].sort().join('-')}`);
 }
 
-export function cardPoints(card: Card): number { return ['J', 'Q', 'K'].includes(card.rank) ? 20 : card.rank === 'JOKER' ? 1 : 5; }
+export function cardPoints(card: Card): number { return ['J', 'Q', 'K'].includes(card.rank) ? 20 : card.rank === 'JOKER' ? 30 : 5; }
 export function playerPoints(cards: Card[]): number { return cards.reduce((total, card) => total + cardPoints(card), 0); }

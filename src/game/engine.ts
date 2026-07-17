@@ -86,7 +86,7 @@ export function calculateFinalScores(state: GameState) {
       faceCards,
       facePoints: faceCards * 20,
       jokers,
-      jokerPoints: jokers,
+      jokerPoints: jokers * 30,
       points: playerPoints(player.captured),
       stats: player.stats,
     };
