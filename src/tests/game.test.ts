@@ -4,6 +4,7 @@ import { createDeck, seededRandom, shuffleDeck } from '../game/deck';
 import { applyMove, calculateFinalScores, createInitialGame, drawCard } from '../game/engine';
 import { Card, EMPTY_STATS, GameState, MatchSettings, Player } from '../game/models';
 import { captureForSelection, cardPoints, findAdditionGroups, findAdditionPairs, findCaptureOptions, findRankMatches, optionForSelection, playerPoints } from '../game/rules';
+import { getUsernameError, isValidUsername, normalizeUsername } from '../game/username';
 
 const settings: MatchSettings = { playerName: 'Tester', playerCount: 2, difficulty: 'hard', room: 'classic', turnSeconds: 20, sound: false, hints: false, reduceMotion: true };
 const c = (rank: Card['rank'], id: string = rank, suit: Card['suit'] = 'spades'): Card => ({ id, rank, suit, value: rank === 'A' ? 1 : /^\d+$/.test(rank) ? Number(rank) : null });
@@ -16,6 +17,12 @@ describe('deck and setup', () => {
   it('places four cards in the middle and 102 in the circle', () => { const game = createInitialGame(settings, 8); expect(game.center).toHaveLength(4); expect(game.ring).toHaveLength(102); expect(game.players).toHaveLength(2); });
   it('keeps the selected game room in the match', () => { expect(createInitialGame({ ...settings, room: 'rush' }, 8).room).toBe('rush'); });
   it('keeps the selected turn timer in the match', () => { expect(createInitialGame({ ...settings, turnSeconds: 30 }, 8).turnSeconds).toBe(30); });
+});
+
+describe('public usernames', () => {
+  it('accepts safe usernames and trims the saved display value', () => { expect(isValidUsername('AddisAce_7')).toBe(true); expect(normalizeUsername('  AddisAce_7  ')).toBe('AddisAce_7'); });
+  it('requires 3 to 18 safe characters', () => { expect(getUsernameError('')).toBeTruthy(); expect(getUsernameError('AB')).toBeTruthy(); expect(getUsernameError('not a username')).toBeTruthy(); expect(getUsernameError('this_username_is_too_long')).toBeTruthy(); });
+  it('blocks staff-like reserved usernames', () => { expect(getUsernameError('admin')).toBeTruthy(); expect(getUsernameError('Teacher')).toBeTruthy(); });
 });
 
 describe('middle captures', () => {
