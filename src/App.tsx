@@ -107,21 +107,22 @@ function Menu({ onChooseTable, onRules, onCredits, canResume, onResume }: { onCh
       <div className="hallway-lockers hallway-lockers-left" aria-hidden="true"><i /><i /><i /></div>
       <div className="hallway-lockers hallway-lockers-right" aria-hidden="true"><i /><i /><i /></div>
       <div className="school-lobby-sign"><SchoolCrest /><span>YOU'VE WALKED INTO</span><h1>Da Mystro Elementary</h1><p>Math &amp; Strategy Game Hall</p></div>
-      <div className="pick-table-heading"><span>WELCOME, STUDENT</span><h2>Choose a classroom</h2><p>Each classroom has its own Injera Be Wat table. Pick the room where you want to play.</p></div>
+      <div className="pick-table-heading"><span>DA MYSTRO GAMINGS PRESENTS</span><h2>Choose a classroom</h2><p>Two ways to play <b>Injera Be Wat</b>. Pick your Da Mystro table.</p></div>
       <div className="lobby-table-grid" role="group" aria-label="Choose a game classroom">
         <button className="lobby-table-card classic-lobby-table" onClick={() => onChooseTable('classic')}>
           <span className="room-door-number">CLASSROOM 8 · ORIGINAL</span>
-          <span className="table-preview" aria-hidden="true"><i className="preview-ring">{Array.from({ length: 14 }, (_, index) => <b key={index} style={{ '--preview-card': index } as React.CSSProperties} />)}</i><em>IBW</em></span>
-          <strong>Original Classroom</strong><small>Enter the emerald classroom and choose any face-down card from the Circle.</small><span className="enter-table-label">ENTER CLASSROOM <b>→</b></span>
+          <span className="table-preview" aria-hidden="true"><span className="preview-dm-crown"><i>♛</i><b>DM</b><small>GAMINGS</small></span><i className="preview-ring">{Array.from({ length: 14 }, (_, index) => <b key={index} style={{ '--preview-card': index } as React.CSSProperties} />)}</i><em><b>INJERA</b><small>BE WAT</small></em><u>ORIGINAL</u></span>
+          <span className="room-edition-badge">THE ORIGINAL TABLE</span><strong>Da Mystro Original</strong><small>Enter the emerald classroom and choose any face-down card from the Circle.</small><span className="enter-table-label">PLAY ORIGINAL <b>→</b></span>
         </button>
         <button className="lobby-table-card rush-lobby-table" onClick={() => onChooseTable('rush')}>
           <span className="room-door-number">CLASSROOM 9 · RUSH</span>
-          <span className="table-preview" aria-hidden="true"><i className="preview-ring">{Array.from({ length: 14 }, (_, index) => <b key={index} style={{ '--preview-card': index } as React.CSSProperties} />)}</i><em>SPIN</em><u>◆</u></span>
-          <strong>Rush &amp; Roulette Classroom</strong><small>Enter the high-energy classroom, spin the table, and let the Circle choose.</small><span className="enter-table-label">ENTER CLASSROOM <b>→</b></span>
+          <span className="table-preview" aria-hidden="true"><span className="preview-dm-crown"><i>♛</i><b>DM</b><small>GAMINGS</small></span><i className="preview-ring">{Array.from({ length: 14 }, (_, index) => <b key={index} style={{ '--preview-card': index } as React.CSSProperties} />)}</i><em><b>INJERA</b><small>BE WAT</small></em><u>RUSH</u><span className="preview-ball">●</span></span>
+          <span className="room-edition-badge">RUSH &amp; ROULETTE</span><strong>Da Mystro Rush</strong><small>Enter the high-energy classroom, spin the table, and let the Circle choose.</small><span className="enter-table-label">PLAY RUSH <b>→</b></span>
         </button>
       </div>
       {canResume && <button className="lobby-resume-button" onClick={onResume}><span>↻</span><b>Resume the game already at your desk</b><small>Your saved match is waiting.</small></button>}
       <div className="lobby-help-links"><button onClick={onRules}>How to Play</button><i>•</i><button onClick={onCredits}>School Credits</button></div>
+      <div className="lobby-brand-stamp" aria-label="A Da Mystro Gamings original"><span>♛</span><b>DM</b><i>A DA MYSTRO GAMINGS ORIGINAL</i></div>
       <div className="hallway-floor" aria-hidden="true" />
     </section>
   </main>;
