@@ -62,36 +62,56 @@ function AIMathBoard({ game }: { game: GameState }) {
 
 export function GameBoard({ game, onDraw, selectedMiddleIds, onMiddleSelect, onPileSelect, onConfirm, onEndTurn, teachingBoard }: { game: GameState; onDraw: (id: string) => void; selectedMiddleIds: string[]; onMiddleSelect: (id: string) => void; onPileSelect: (playerId: string) => void; onConfirm: () => void; onEndTurn: () => void; teachingBoard?: React.ReactNode }) {
   const [spinAngle, setSpinAngle] = useState(0);
+  const [ballAngle, setBallAngle] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
   const spinTimer = useRef<number | null>(null);
   useEffect(() => () => { if (spinTimer.current) window.clearTimeout(spinTimer.current); }, []);
   const current = game.players[game.currentPlayerIndex];
+  const spinToCard = (cardIndex: number, cardCount: number) => {
+    setIsSpinning(true);
+    setSpinAngle((angle) => {
+      const currentPosition = ((angle % 360) + 360) % 360;
+      const landingPosition = ((-(cardIndex * 360 / cardCount) % 360) + 360) % 360;
+      const landingDelta = (landingPosition - currentPosition + 360) % 360;
+      return angle + (game.reduceMotion ? 360 : 1080) + landingDelta;
+    });
+    setBallAngle((angle) => {
+      const currentPosition = ((angle % 360) + 360) % 360;
+      return angle - (game.reduceMotion ? 360 : 1440) - currentPosition;
+    });
+  };
   useEffect(() => {
     if (game.room !== 'rush' || current.isHuman || game.turn.phase !== 'draw') return;
     if (spinTimer.current) window.clearTimeout(spinTimer.current);
-    setIsSpinning(true);
-    setSpinAngle((angle) => angle + 720 + Math.floor(Math.random() * 360));
-    spinTimer.current = window.setTimeout(() => setIsSpinning(false), game.reduceMotion ? 150 : 1400);
+    const landedIndex = Math.floor(Math.random() * game.ring.length);
+    const landedCard = game.ring[landedIndex];
+    if (!landedCard) return;
+    spinToCard(landedIndex, game.ring.length);
+    spinTimer.current = window.setTimeout(() => { setIsSpinning(false); onDraw(landedCard.id); }, game.reduceMotion ? 150 : 1400);
   }, [game.room, game.currentPlayerIndex, game.turn.phase, game.moveNumber, game.reduceMotion, current.isHuman]);
   const canDraw = current.isHuman && game.turn.phase === 'draw';
   const canPickCircleCard = canDraw && game.room !== 'rush';
   const canSelect = current.isHuman && game.turn.phase === 'choose' && game.turn.drawnCard?.rank !== 'JOKER';
+  const circleRadius = 'clamp(250px, 31vmin, 365px)';
+  const mobileCircleRadius = 'clamp(130px, 38vw, 172px)';
   const canPileMatch = game.turn.captureOptions.some((option) => option.id.startsWith('pile-match-'));
   const selectedPileTake = game.turn.captureOptions.find((option) => option.targetPlayerId && option.capturedCardIds.length === selectedMiddleIds.length && option.capturedCardIds.every((id) => selectedMiddleIds.includes(id)));
   const tableMoment = game.turn.message.includes('swept') ? 'joker-sweep' : game.turn.message.includes('captured') || game.turn.message.includes('took') ? 'capture-success' : '';
   const spinTable = () => {
     if (!canDraw || isSpinning) return;
-    setIsSpinning(true);
-    setSpinAngle((angle) => angle + 720 + Math.floor(Math.random() * 360));
+    const landedIndex = Math.floor(Math.random() * game.ring.length);
+    const landedCard = game.ring[landedIndex];
+    if (!landedCard) return;
+    spinToCard(landedIndex, game.ring.length);
     spinTimer.current = window.setTimeout(() => {
       setIsSpinning(false);
-      const landedCard = game.ring[Math.floor(Math.random() * game.ring.length)];
-      if (landedCard) onDraw(landedCard.id);
+      onDraw(landedCard.id);
     }, game.reduceMotion ? 150 : 1400);
   };
   return <div className={`table-wrap classroom-desk ${game.room === 'rush' ? 'rush-room' : 'classic-room'} ${tableMoment} ${game.reduceMotion ? 'reduce-motion' : ''}`}>
-    <div className="royal-room-brand" aria-hidden="true"><span>DA MYSTRO</span><b>{game.room === 'rush' ? 'RUSH & ROULETTE' : 'ROYAL MATH CLUB'}</b></div>
+    <div className="royal-room-brand" aria-hidden="true"><i>♛</i><span>DA MYSTRO GAMINGS</span><b>{game.room === 'rush' ? 'RUSH & ROULETTE CLASSROOM' : 'ORIGINAL INJERA BE WAT'}</b></div>
     <div className="royal-table-jewel" aria-hidden="true">◆</div>
+    <div className={`dm-hover-crown ${isSpinning ? 'crown-spinning' : ''}`} aria-hidden="true" style={{ '--crown-spin': `${spinAngle}deg` } as React.CSSProperties}><div className="dm-crown-body"><i>♛</i><b>DM</b><small>GAMINGS</small></div></div>
     <div className="royal-lion-seal royal-lion-left" aria-hidden="true"><span>♛</span><b>DM</b></div>
     <div className="royal-lion-seal royal-lion-right" aria-hidden="true"><span>♛</span><b>DM</b></div>
     <EmojiTaunts game={game} />
@@ -108,18 +128,16 @@ export function GameBoard({ game, onDraw, selectedMiddleIds, onMiddleSelect, onP
     <AIMathBoard game={game} />
     {canSelect && <div className="table-turn-actions"><button className="table-action table-add-action" disabled={!selectedMiddleIds.length && !canPileMatch} onClick={onConfirm} aria-label={selectedPileTake ? 'Take selected opponent pile stack' : canPileMatch && !selectedMiddleIds.length ? `Add ${game.turn.drawnCard?.rank} to your matching pile` : 'Submit add or match'}><span>{selectedPileTake ? 'TAKE STACK' : canPileMatch && !selectedMiddleIds.length ? 'ADD TO PILE' : 'ADD / MATCH'}</span><b>=</b></button><button className="table-action table-end-action" onClick={onEndTurn}><span>END</span><b>TURN</b></button></div>}
     <div className="game-table">
-      {game.room === 'rush' && <><div className={`roulette-table-disk ${isSpinning ? 'ring-spinning' : ''}`} aria-hidden="true" style={{ '--table-spin': `${spinAngle}deg` } as React.CSSProperties}>{Array.from({ length: 12 }, (_, index) => <i key={index} style={{ '--slot': index } as React.CSSProperties}>{index + 1}</i>)}</div><div className="roulette-pointer" aria-hidden="true">◆</div>{isSpinning && <div className="roulette-spin-status" aria-live="polite">RUSH!</div>}</>}
+      {game.room === 'rush' && <><div className={`roulette-table-disk ${isSpinning ? 'ring-spinning' : ''}`} aria-hidden="true" style={{ '--table-spin': `${spinAngle}deg` } as React.CSSProperties}>{Array.from({ length: 12 }, (_, index) => <i key={index} style={{ '--slot': index } as React.CSSProperties}>{index + 1}</i>)}</div><div className={`roulette-ball-track ${isSpinning ? 'ball-spinning' : ''}`} aria-hidden="true" style={{ '--ball-spin': `${ballAngle}deg` } as React.CSSProperties}><i /></div><div className="roulette-pointer" aria-hidden="true">◆</div>{isSpinning && <div className="roulette-spin-status" aria-live="polite">BALL IN PLAY</div>}</>}
       <div className="table-pattern" aria-hidden="true" style={game.room === 'rush' ? { '--table-spin': `${spinAngle}deg` } as React.CSSProperties : undefined} />
-      <div className="table-crest" aria-hidden="true"><b>IBW</b><small>ADD · MATCH</small></div>
-      <div className={`ring ${isSpinning ? 'ring-spinning' : ''}`} aria-label={`Injera ring, ${game.ring.length} cards remaining`} style={{ '--table-spin': `${spinAngle}deg` } as React.CSSProperties}>
+      <div className="table-crest dm-table-crest" aria-hidden="true"><i>♛</i><b>DM</b><small>INJERA BE WAT</small></div>
+      <div className={`ring ${isSpinning ? 'ring-spinning' : ''}`} aria-label={`Injera ring, ${game.ring.length} cards remaining`} style={{ '--table-spin': `${spinAngle}deg`, '--circle-radius': circleRadius, '--circle-diameter': 'clamp(500px, 62vmin, 730px)', '--mobile-radius': mobileCircleRadius, '--mobile-circle-diameter': 'clamp(260px, 76vw, 344px)' } as React.CSSProperties}>
         {game.ring.map((card, index) => {
           const total = game.ring.length;
           const angle = (360 / Math.max(total, 1)) * index - 90;
           // Keep one full-size Circle throughout the match. As cards leave,
           // the same circumference is divided between fewer cards so gaps grow.
-          const radius = 29;
-          const mobileRadius = 'clamp(128px, 24.5vw, 154px)';
-          return <CardView key={card.id} card={card} faceDown className={`ring-card ${total > 36 ? 'dense-ring' : ''} single-ring`} label={canPickCircleCard ? `Draw card ${index + 1} from the Circle` : game.room === 'rush' && canDraw ? 'Spin the table to draw this face-down card' : 'Face-down Circle card'} onClick={canPickCircleCard ? () => onDraw(card.id) : undefined} style={{ '--angle': `${angle}deg`, '--radius': `${radius}vmin`, '--mobile-radius': mobileRadius, '--ring-z': 1 } as React.CSSProperties} />;
+          return <CardView key={card.id} card={card} faceDown className={`ring-card ${total > 36 ? 'dense-ring' : ''} single-ring`} label={canPickCircleCard ? `Draw card ${index + 1} from the Circle` : game.room === 'rush' && canDraw ? 'Spin the table to draw this face-down card' : 'Face-down Circle card'} onClick={canPickCircleCard ? () => onDraw(card.id) : undefined} style={{ '--angle': `${angle}deg`, '--radius': 'var(--circle-radius)', '--ring-z': 1 } as React.CSSProperties} />;
         })}
       </div>
       <section className="wot" aria-label="Middle cards">

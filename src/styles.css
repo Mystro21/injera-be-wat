@@ -779,3 +779,283 @@ body { color:var(--ink); background:#d9c59d; background-image:linear-gradient(90
   .lobby-table-card { min-height:264px; }
   .lobby-table-card>strong { font-size:20px; }
 }
+
+/* Keep the turn controls ahead of the lesson and reachable without scrolling. */
+.move-action-dock {
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1.25fr) minmax(0,.75fr);
+  gap:10px;
+  margin:15px 0 16px;
+  padding:13px 11px 12px;
+  border:1px solid rgba(244,207,105,.48);
+  border-radius:8px;
+  background:rgba(2,24,16,.58);
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.025),0 6px 14px rgba(0,0,0,.24);
+}
+.move-action-dock>small { grid-column:1/-1;color:#f1ce6d;font-size:6px;font-weight:900;letter-spacing:1.8px; }
+.move-action-dock .confirm-button,.move-action-dock .end-turn-button { min-height:50px;margin:0; }
+.move-action-dock .confirm-button { font-weight:900; }
+.move-action-dock .confirm-button span { margin-left:8px;font:800 20px 'Fraunces',serif; }
+.move-action-dock .end-turn-button { color:#fff1db;font-size:11px;font-weight:900;text-transform:uppercase; }
+.move-panel>.no-capture { margin:0 0 14px; }
+.move-panel>.no-capture+.teaching-board { margin-top:21px; }
+
+@media (min-width:501px) and (max-width:760px) {
+  .move-panel .move-action-dock { display:none; }
+}
+
+@media (max-width:500px) {
+  .move-panel { padding-bottom:calc(118px + env(safe-area-inset-bottom)); }
+  .move-action-dock {
+    position:fixed;
+    z-index:40;
+    right:8px;
+    bottom:calc(8px + env(safe-area-inset-bottom));
+    left:8px;
+    grid-template-columns:minmax(0,1.3fr) minmax(106px,.7fr);
+    margin:0;
+    padding:8px;
+    border:2px solid #e4ba54;
+    border-bottom:5px solid #6b401e;
+    border-radius:12px;
+    background:linear-gradient(180deg,rgba(8,48,32,.98),rgba(3,27,18,.99));
+    box-shadow:0 -5px 22px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.09);
+  }
+  .move-action-dock>small { position:absolute;left:14px;top:-9px;width:auto;padding:3px 7px;border:1px solid #f2d178;border-radius:5px;color:#fff3c5;background:#6e4020; }
+  .move-action-dock .confirm-button,.move-action-dock .end-turn-button { min-height:54px;font-size:11px; }
+  .move-action-dock .confirm-button { box-shadow:inset 0 1px 0 #fff0ad,0 3px 0 #694116!important; }
+  .move-action-dock .end-turn-button { box-shadow:0 3px 0 #031c12!important; }
+}
+
+/* Da Mystro Gamings branded deck. */
+.card-back {
+  border-color:#f1d278!important;
+  background:#061f16!important;
+}
+.card-back:before {
+  inset:3px!important;
+  border-radius:3px!important;
+  background:
+    linear-gradient(135deg,transparent 0 43%,rgba(239,196,83,.72) 43% 47%,transparent 47% 53%,rgba(181,54,45,.72) 53% 57%,transparent 57%),
+    repeating-conic-gradient(from 0deg at 50% 50%,#0a3626 0 9deg,#bb8c32 9deg 13deg,#08271c 13deg 22deg,#a83b31 22deg 25deg)!important;
+}
+.card-back-frame {
+  inset:7px;
+  border:2px solid #e9c765!important;
+  border-radius:6px 6px 12px 12px!important;
+  background:radial-gradient(circle at 50% 42%,rgba(39,111,73,.72),#061f16 62%)!important;
+  box-shadow:inset 0 0 0 3px #092b1e,0 0 0 2px #6f431f,0 0 11px rgba(247,206,99,.4)!important;
+}
+.card-back-frame:before {
+  content:'';
+  position:absolute;
+  inset:4px;
+  border:1px solid rgba(238,205,111,.55);
+  border-radius:4px 4px 10px 10px;
+  background:linear-gradient(90deg,#1f6a48 0 33%,#d6aa39 33% 66%,#a83b31 66%) top/100% 3px no-repeat;
+}
+.dm-card-crest {
+  position:relative;
+  z-index:1;
+  display:flex;
+  width:70%;
+  height:70%;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:#f2d47a;
+  background:linear-gradient(145deg,#173d2d,#020b08);
+  border:1px solid #d9ac45;
+  border-radius:48% 48% 42% 42% / 38% 38% 58% 58%;
+  box-shadow:inset 0 0 0 2px rgba(236,199,97,.13),0 2px 5px rgba(0,0,0,.5);
+  text-shadow:0 1px 0 #000;
+}
+.dm-card-crest i { color:#efc95f;font-size:8px;font-style:normal;line-height:.8; }
+.dm-card-crest b { font:800 9px/1 'Fraunces',serif;letter-spacing:.3px; }
+.dm-card-crest small { margin-top:2px;color:#ddc47f;font-size:3.5px;font-weight:900;letter-spacing:.7px; }
+.card-brand-stamp {
+  position:absolute;
+  z-index:4;
+  left:50%;
+  bottom:6px;
+  display:flex;
+  align-items:center;
+  gap:2px;
+  transform:translateX(-50%);
+  color:#8a642e;
+  font-size:4px;
+  font-weight:900;
+  letter-spacing:.25px;
+  opacity:.62;
+  text-shadow:0 1px 0 #fff3d3;
+}
+.card-brand-stamp i { color:#b58a35;font-size:5px;font-style:normal; }
+.joker-card .card-brand-stamp,.court-card .card-brand-stamp { color:#9d392f;opacity:.82; }
+.card-weave {
+  background:repeating-linear-gradient(90deg,#1e6a48 0 8px,#d9aa35 8px 16px,#ae3d32 16px 24px,#101813 24px 28px);
+}
+.ring-card.dense-ring .dm-card-crest i { font-size:6px; }
+.ring-card.dense-ring .dm-card-crest b { font-size:7px; }
+.ring-card.dense-ring .dm-card-crest small { font-size:3px;letter-spacing:.35px; }
+.table-player-seat .seat-pile-top .card-brand-stamp { display:none; }
+
+/* Da Mystro Gamings table identity. */
+.royal-room-brand { min-width:205px;padding-top:11px; }
+.royal-room-brand>i { position:absolute;top:-11px;display:grid;width:25px;height:20px;place-items:center;color:#f3cf68;background:#17100b;border:1px solid #d9ad47;border-radius:50% 50% 4px 4px;font-size:14px;font-style:normal;box-shadow:0 2px 0 #6d451e; }
+.royal-room-brand>span { text-shadow:0 1px 0 #000; }
+.royal-room-brand>b { max-width:190px;text-align:center;white-space:nowrap; }
+.classroom-desk .table-pattern:before { content:'DA MYSTRO GAMINGS  •  INJERA BE WAT  •  ADD  •  MATCH'!important;color:#efd477!important;opacity:.78!important; }
+.classroom-desk .dm-table-crest {
+  inset:39.5%;
+  gap:0;
+  border:2px solid #efcf72!important;
+  border-radius:48% 48% 44% 44% / 40% 40% 58% 58%;
+  color:#efd274!important;
+  background:radial-gradient(circle at 50% 38%,#225f43,#05281b 68%);
+  box-shadow:inset 0 0 0 4px #082d1f,0 0 0 2px #70451f,0 0 0 5px rgba(227,181,67,.42),0 8px 15px rgba(0,0,0,.38)!important;
+  text-shadow:0 2px 0 #000;
+}
+.classroom-desk .dm-table-crest:before { content:'';position:absolute;inset:-7px;border-radius:50%;background:conic-gradient(#1e6a48 0 33%,#d9aa35 0 66%,#ae3d32 0);z-index:-1;opacity:.75; }
+.classroom-desk .dm-table-crest>i { color:#efcb65;font-size:8px;font-style:normal;line-height:.7; }
+.classroom-desk .dm-table-crest>b { color:#f5d97f;font:800 24px/1 'Fraunces',serif!important;letter-spacing:-1px; }
+.classroom-desk .dm-table-crest>small { margin-top:2px;color:#f1d482!important;font-size:4px;font-weight:900;letter-spacing:.7px; }
+.rush-room .dm-table-crest { background:radial-gradient(circle at 50% 38%,#8f2a34,#231016 68%); }
+
+@media (max-width:760px) {
+  .royal-room-brand { min-width:165px; }
+  .royal-room-brand>i { top:-9px;width:21px;height:17px;font-size:11px; }
+  .classroom-desk .dm-table-crest>b { font-size:19px!important; }
+  .classroom-desk .dm-table-crest>small { font-size:3.3px; }
+}
+
+/* Floating Da Mystro crown follows every Rush table spin. */
+.dm-hover-crown {
+  --crown-spin:0deg;
+  position:absolute;
+  z-index:12;
+  top:90px;
+  left:50%;
+  width:74px;
+  height:74px;
+  transform:translateX(-50%) rotate(var(--crown-spin));
+  transform-origin:50% 50%;
+  transition:transform 1.35s cubic-bezier(.16,.78,.17,1);
+  pointer-events:none;
+  filter:drop-shadow(0 13px 8px rgba(0,0,0,.52));
+}
+.dm-hover-crown:before {
+  content:'';
+  position:absolute;
+  inset:2px;
+  border:1px solid rgba(246,210,106,.52);
+  border-radius:50%;
+  box-shadow:0 0 18px rgba(244,198,78,.32),inset 0 0 12px rgba(244,198,78,.18);
+  opacity:.7;
+}
+.dm-crown-body {
+  position:absolute;
+  inset:8px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  color:#f2d16c;
+  background:radial-gradient(circle at 50% 32%,#2a6548,#071d14 68%);
+  border:2px solid #e7bd50;
+  border-radius:50% 50% 44% 44%;
+  box-shadow:inset 0 0 0 3px #123624,0 0 0 2px #6f411b,0 0 18px rgba(246,198,78,.38);
+  text-shadow:0 2px 0 #000;
+  animation:dm-crown-hover 1.8s ease-in-out infinite alternate;
+}
+.dm-crown-body i { margin-top:-18px;color:#ffd96c;font-size:34px;font-style:normal;line-height:.8;filter:drop-shadow(0 2px 0 #6e431c); }
+.dm-crown-body b { margin-top:4px;font:800 12px/1 'Fraunces',serif;letter-spacing:.3px; }
+.dm-crown-body small { margin-top:2px;color:#d9c17d;font-size:3.8px;font-weight:900;letter-spacing:1px; }
+.dm-hover-crown.crown-spinning:before { border-style:dashed;opacity:1;box-shadow:0 0 27px rgba(255,210,78,.65),inset 0 0 16px rgba(255,210,78,.35); }
+.rush-room .dm-crown-body { background:radial-gradient(circle at 50% 32%,#9e303a,#231016 68%);box-shadow:inset 0 0 0 3px #4f1720,0 0 0 2px #6f411b,0 0 21px rgba(255,184,69,.48); }
+@keyframes dm-crown-hover { from { translate:0 -3px; } to { translate:0 5px; } }
+.reduce-motion .dm-hover-crown { transition-duration:.12s; }
+.reduce-motion .dm-crown-body { animation:none; }
+
+@media (max-width:1000px) {
+  .dm-hover-crown { top:76px;width:65px;height:65px; }
+  .dm-crown-body i { margin-top:-15px;font-size:29px; }
+}
+
+@media (max-width:760px) {
+  .dm-hover-crown { top:55px;width:54px;height:54px; }
+  .dm-crown-body { inset:6px;border-width:1px; }
+  .dm-crown-body i { margin-top:-12px;font-size:24px; }
+  .dm-crown-body b { margin-top:2px;font-size:9px; }
+  .dm-crown-body small { font-size:3px;letter-spacing:.55px; }
+}
+
+/* Wider fixed Circle for the full two-deck ring. */
+.ring:before {
+  content:'';
+  position:absolute;
+  z-index:0;
+  left:50%;
+  top:50%;
+  width:var(--circle-diameter,620px);
+  aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  border:2px solid rgba(243,207,111,.36);
+  border-radius:50%;
+  box-shadow:0 0 0 5px rgba(3,35,23,.3),inset 0 0 18px rgba(243,207,111,.1);
+  pointer-events:none;
+}
+.rush-room .ring:before { border-style:dashed;border-color:rgba(255,206,94,.55); }
+
+@media (min-width:761px) {
+  .classroom-desk .game-table { width:min(900px,calc(100% - 28px),78vw); }
+}
+
+@media (max-width:760px) {
+  .classroom-desk .game-table { width:min(92vw,64vh,470px); }
+  .ring:before { width:var(--mobile-circle-diameter,76vw); }
+}
+
+@media (max-width:360px) {
+  .classroom-desk .game-table { width:min(94vw,64vh,350px); }
+}
+
+/* Rush roulette ball: the card beneath its final position is the real draw. */
+.roulette-ball-track {
+  --ball-spin:0deg;
+  position:absolute;
+  z-index:7;
+  left:50%;
+  top:50%;
+  width:clamp(500px,62vmin,730px);
+  aspect-ratio:1;
+  transform:translate(-50%,-50%) translateZ(72px) rotate(var(--ball-spin));
+  transform-origin:50% 50%;
+  transition:transform 1.35s cubic-bezier(.12,.74,.15,1);
+  border-radius:50%;
+  pointer-events:none;
+}
+.roulette-ball-track:before { content:'';position:absolute;inset:-8px;border:1px solid rgba(255,226,141,.22);border-radius:50%;box-shadow:inset 0 0 14px rgba(255,218,104,.12); }
+.roulette-ball-track>i {
+  position:absolute;
+  left:50%;
+  top:-8px;
+  width:18px;
+  height:18px;
+  transform:translateX(-50%);
+  border:2px solid #fff0b0;
+  border-radius:50%;
+  background:radial-gradient(circle at 31% 27%,#fffbdc 0 12%,#f4cf68 25%,#b9781b 67%,#5b3416 100%);
+  box-shadow:0 0 0 2px #553119,0 6px 8px rgba(0,0,0,.62),0 0 18px rgba(255,211,91,.72);
+}
+.roulette-ball-track.ball-spinning:before { border-style:dashed;border-color:rgba(255,221,118,.55); }
+.roulette-ball-track.ball-spinning>i { animation:roulette-ball-hop .16s ease-in-out infinite alternate; }
+@keyframes roulette-ball-hop { from { scale:.9;filter:brightness(.95); } to { scale:1.18;filter:brightness(1.3); } }
+.reduce-motion .roulette-ball-track { transition-duration:.12s; }
+.reduce-motion .roulette-ball-track>i { animation:none; }
+
+@media (max-width:760px) {
+  .roulette-ball-track { width:clamp(260px,76vw,344px); }
+  .roulette-ball-track>i { top:-6px;width:15px;height:15px; }
+  .roulette-spin-status { padding:8px 13px;font-size:clamp(14px,4vw,22px);letter-spacing:1.4px;white-space:nowrap; }
+}

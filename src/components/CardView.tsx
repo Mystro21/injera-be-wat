@@ -9,12 +9,13 @@ export function CardView({ card, faceDown = false, className = '', label, onClic
   const displayRank = card?.rank === 'JOKER' ? 'J' : card?.rank;
   const typeClass = card?.rank === 'JOKER' ? 'joker-card' : ['J', 'Q', 'K'].includes(card?.rank ?? '') ? 'court-card' : card?.rank === 'A' ? 'ace-card' : '';
   const content = faceDown ? (
-    <span className="card-back-frame" aria-hidden="true"><span className="mesob-mark"><b>IBW</b><i>◆</i></span></span>
+    <span className="card-back-frame" aria-hidden="true"><span className="dm-card-crest"><i>♛</i><b>DM</b><small>GAMINGS</small></span></span>
   ) : (
     <>
       <span className="card-weave card-weave-top" aria-hidden="true" />
       <span className="card-corner card-corner-top"><b>{displayRank}</b><i>{glyph}</i></span>
       <span className="card-center"><b className="card-rank">{displayRank}</b><span className="card-suit">{glyph}</span>{card && courtName[card.rank] && <small>{courtName[card.rank]}</small>}</span>
+      <span className="card-brand-stamp" aria-hidden="true"><i>♛</i><b>DM</b></span>
       <span className="card-corner card-corner-bottom"><b>{displayRank}</b><i>{glyph}</i></span>
       <span className="card-weave card-weave-bottom" aria-hidden="true" />
     </>

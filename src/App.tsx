@@ -53,6 +53,9 @@ export default function App() {
     if (!game || screen !== 'game' || paused || game.turn.phase === 'game-over') return;
     const current = game.players[game.currentPlayerIndex];
     if (current.isHuman) return;
+    // Rush draws are completed by the visible roulette ball in GameBoard so
+    // the card under the ball is always the card the AI actually receives.
+    if (game.room === 'rush' && game.turn.phase === 'draw') return;
     const timer = window.setTimeout(() => {
       setGame((latest) => {
         if (!latest) return latest;
@@ -178,7 +181,14 @@ function GameScreen({ game, turnTimeLeft, selectedMiddleIds, onMiddleSelect, onP
     <header className="game-header"><Logo /><div className="turn-pill"><i /> <span><small>CURRENT TURN</small><strong>{current.name}{current.isHuman ? ' · You' : ''}</strong></span></div><div className="game-actions"><div className={`turn-timer ${current.isHuman && turnTimeLeft <= 5 ? 'timer-warning' : ''}`} aria-live="polite"><small>TURN</small><strong>{current.isHuman ? Math.max(0, turnTimeLeft) : 'AI'}</strong><span>{current.isHuman ? 'sec' : ''}</span></div><span className="remaining-count"><strong>{game.ring.length}</strong> cards left</span><button className="icon-button" onClick={onPause} aria-label="Pause match">Ⅱ</button></div></header>
     <div className="score-rail" aria-label="Collected cards">{game.players.map((player, index) => <PlayerChip game={game} index={index} selectedIds={selectedMiddleIds} onPileSelect={onPileSelect} key={player.id} />)}</div>
     <GameBoard game={game} onDraw={onDraw} selectedMiddleIds={selectedMiddleIds} onMiddleSelect={onMiddleSelect} onPileSelect={onPileSelect} onConfirm={onConfirm} onEndTurn={onEndTurn} teachingBoard={<TeachingBoard game={game} />} />
-    <aside className="move-panel" aria-live="polite"><span className="eyebrow">{game.turn.phase === 'draw' ? game.room === 'rush' ? 'SPIN TO DRAW' : 'PICK A CARD' : 'ADD OR MATCH'}</span><TeachingBoard game={game} /><h2>{current.isHuman ? game.turn.message : `${current.name} is studying the middle…`}</h2>{notice && <p className="move-error">{notice}</p>}{isHumanChoice && <><p className="no-capture">{selectedPileTake ? `Press equals to take ${selectedPileTake.capturedCardIds.length} matching top card${selectedPileTake.capturedCardIds.length === 1 ? '' : 's'} from the selected pile.` : canPileMatch ? `Your pile ends in ${game.turn.drawnCard?.rank}. Press equals to add the new ${game.turn.drawnCard?.rank} and keep going.` : 'Select every Middle match and every separate group that adds to the drawn card, then press equals.'}</p><button className="primary-button confirm-button" disabled={!selectedMiddleIds.length && !canPileMatch} onClick={onConfirm}>{selectedPileTake ? 'Take top stack' : canPileMatch && !selectedMiddleIds.length ? `Add ${game.turn.drawnCard?.rank} to pile` : 'Add / match'} <span>=</span></button><button className="secondary-button end-turn-button" onClick={onEndTurn}>End turn — no take-backs</button></>}</aside>
+    <aside className="move-panel" aria-live="polite">
+      <span className="eyebrow">{game.turn.phase === 'draw' ? game.room === 'rush' ? 'SPIN TO DRAW' : 'PICK A CARD' : 'ADD OR MATCH'}</span>
+      <h2>{current.isHuman ? game.turn.message : `${current.name} is studying the middle…`}</h2>
+      {notice && <p className="move-error">{notice}</p>}
+      {isHumanChoice && <div className="move-action-dock" aria-label="Turn actions"><small>YOUR MOVE</small><button className="primary-button confirm-button" disabled={!selectedMiddleIds.length && !canPileMatch} onClick={onConfirm}>{selectedPileTake ? 'Take top stack' : canPileMatch && !selectedMiddleIds.length ? `Add ${game.turn.drawnCard?.rank} to pile` : 'Add / match'} <span>=</span></button><button className="secondary-button end-turn-button" onClick={onEndTurn}>End turn</button></div>}
+      {isHumanChoice && <p className="no-capture">{selectedPileTake ? `Press equals to take ${selectedPileTake.capturedCardIds.length} matching top card${selectedPileTake.capturedCardIds.length === 1 ? '' : 's'} from the selected pile.` : canPileMatch ? `Your pile ends in ${game.turn.drawnCard?.rank}. Press equals to add the new ${game.turn.drawnCard?.rank} and keep going.` : 'Select every Middle match and every separate group that adds to the drawn card, then press equals. End your turn when you are finished.'}</p>}
+      <TeachingBoard game={game} />
+    </aside>
   </main>;
 }
 
