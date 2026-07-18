@@ -544,3 +544,238 @@ body { color:var(--ink); background:#d9c59d; background-image:linear-gradient(90
 .pause-game-actions button b { color:#fff6d7;font:700 16px 'Fraunces',serif; }
 .pause-game-actions button small { margin-top:5px;color:#d3dacd;font-size:9px;line-height:1.35; }
 @media (max-width:560px) { .pause-game-actions { grid-template-columns:1fr; }.pause-game-actions button { min-height:64px; } }
+
+/* 2026 visual refinement: full crest, richer classroom depth, clearer play cards. */
+.school-welcome {
+  position:relative;
+  isolation:isolate;
+  background-image:
+    radial-gradient(circle at 82% 32%,rgba(80,176,120,.25),transparent 29%),
+    linear-gradient(112deg,rgba(255,255,255,.055),transparent 42%),
+    repeating-linear-gradient(135deg,rgba(244,204,105,.025) 0 2px,transparent 2px 18px);
+}
+.school-welcome:before,.school-welcome:after {
+  content:'';
+  position:absolute;
+  z-index:-1;
+  width:130px;
+  height:130px;
+  border:1px solid rgba(241,202,105,.16);
+  transform:rotate(45deg);
+  pointer-events:none;
+}
+.school-welcome:before { left:-78px;top:-62px;box-shadow:0 0 0 18px rgba(181,70,55,.055); }
+.school-welcome:after { right:-74px;bottom:-72px;box-shadow:0 0 0 18px rgba(229,176,60,.055); }
+.dm-royal-crest {
+  width:clamp(205px,20vw,258px);
+  aspect-ratio:1;
+  display:grid;
+  place-items:center;
+  padding:7px;
+  border:1px solid rgba(255,229,157,.8);
+  border-radius:20px;
+  background:linear-gradient(145deg,#050504,#000);
+  overflow:hidden;
+  box-shadow:0 0 0 5px #80551f,0 0 0 8px #e1b44e,0 18px 38px rgba(0,0,0,.42),inset 0 0 24px rgba(230,181,68,.12);
+  transform:rotate(1deg);
+}
+.dm-royal-crest img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  transform:none;
+  filter:saturate(1.08) contrast(1.04);
+}
+.school-hero-cta {
+  position:relative;
+  overflow:hidden;
+  box-shadow:inset 0 1px 0 #fff0ad,4px 4px 0 #943c31,0 9px 20px rgba(6,27,18,.28);
+}
+.school-hero-cta:after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.35) 45%,transparent 65%);
+  transform:translateX(-130%);
+  transition:transform .45s ease;
+}
+.school-hero-cta:hover:after { transform:translateX(130%); }
+.featured-classroom,.school-notice-board,.classroom-window {
+  box-shadow:0 7px 0 rgba(91,52,29,.24),0 15px 30px rgba(75,44,24,.12);
+}
+
+.classroom-desk .game-table:after {
+  content:'';
+  position:absolute;
+  z-index:0;
+  inset:8%;
+  border:1px dashed rgba(255,221,126,.3);
+  border-radius:50%;
+  box-shadow:0 0 0 1px rgba(30,15,8,.45),inset 0 0 55px rgba(0,0,0,.2);
+  pointer-events:none;
+}
+.classroom-desk .center-cards .playing-card,.classroom-desk .drawn-card .playing-card {
+  border-color:#f0d276;
+  box-shadow:0 5px 0 #5c341b,0 12px 20px rgba(0,0,0,.58);
+}
+.classroom-desk .center-cards .playing-card { cursor:pointer; }
+.classroom-desk .card-corner b { text-shadow:0 1px 0 #fff; }
+.classroom-desk .drawn-card>span,.classroom-desk .wot-label {
+  padding:3px 7px;
+  border-radius:999px;
+  color:#ffe18a;
+  background:rgba(3,29,19,.72);
+  box-shadow:0 2px 0 rgba(0,0,0,.3);
+  letter-spacing:1.6px;
+}
+.game-screen .player-chip .avatar { box-shadow:inset 0 0 0 2px rgba(255,255,255,.18),0 3px 8px rgba(0,0,0,.35); }
+.game-screen .player-chip>b { color:#ffe184; }
+
+@media (max-width:680px) {
+  .school-welcome { gap:21px;padding-top:25px; }
+  .school-welcome .dm-royal-crest { width:min(47vw,178px);aspect-ratio:1;border-radius:16px; }
+  .school-welcome h1 { font-size:clamp(39px,11.5vw,47px); }
+  .school-welcome-copy>p { margin-inline:auto; }
+}
+
+@media (max-width:600px) {
+  .center-cards { max-width:124px;gap:6px; }
+  .center-cards .playing-card { width:52px;height:75px; }
+  .center-cards .card-corner b { font-size:13px; }
+  .center-cards .card-corner i { font-size:11px; }
+  .center-cards .card-rank { font-size:23px; }
+  .center-cards .card-suit { font-size:25px; }
+  .drawn-card .playing-card { width:58px;height:83px; }
+  .drawn-card .card-corner b { font-size:14px; }
+  .drawn-card .card-rank { font-size:25px; }
+  .drawn-card .card-suit { font-size:27px; }
+  .player-pile-top.playing-card { width:46px;height:66px; }
+  .visible-pile:before,.visible-pile:after { width:46px;height:66px; }
+  .classroom-desk .game-table:after { inset:9%; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .school-hero-cta:after { display:none; }
+}
+
+/* School lobby opening: walk in, then choose a game table. */
+.school-lobby-screen { min-height:calc(100svh - 76px);background:#efe3bf; }
+.school-hallway {
+  position:relative;
+  isolation:isolate;
+  min-height:calc(100svh - 76px);
+  padding:31px 22px 46px;
+  overflow:hidden;
+  color:#203329;
+  background:
+    linear-gradient(90deg,rgba(105,58,32,.16),transparent 14% 86%,rgba(105,58,32,.16)),
+    linear-gradient(180deg,#f7edcf 0 62%,#d5b16c 62% 64%,#765034 64% 100%);
+}
+.school-hallway:before {
+  content:'';
+  position:absolute;
+  z-index:-2;
+  inset:0;
+  background:
+    linear-gradient(90deg,transparent 49.7%,rgba(111,71,40,.16) 50%,transparent 50.3%),
+    repeating-linear-gradient(0deg,transparent 0 75px,rgba(111,71,40,.07) 75px 77px);
+  background-size:420px 100%,100% 100%;
+}
+.school-hallway:after {
+  content:'';
+  position:absolute;
+  z-index:-1;
+  left:50%;
+  top:0;
+  width:min(940px,82vw);
+  height:66%;
+  transform:translateX(-50%);
+  background:radial-gradient(ellipse at 50% 0,rgba(255,255,255,.96),rgba(255,247,210,.36) 45%,transparent 72%);
+  pointer-events:none;
+}
+.hallway-lights { position:absolute;z-index:0;left:50%;top:13px;display:flex;width:min(740px,67vw);justify-content:space-between;transform:translateX(-50%);pointer-events:none; }
+.hallway-lights i { width:105px;height:14px;border:2px solid #9b7441;border-radius:50%;background:#fff9d8;box-shadow:0 0 25px 10px rgba(255,239,176,.62); }
+.hallway-lockers { position:absolute;z-index:0;top:10%;display:flex;gap:3px;opacity:.88;filter:drop-shadow(0 12px 8px rgba(58,31,17,.22));pointer-events:none; }
+.hallway-lockers-left { left:-10px;transform:perspective(500px) rotateY(17deg);transform-origin:left; }
+.hallway-lockers-right { right:-10px;transform:perspective(500px) rotateY(-17deg);transform-origin:right; }
+.hallway-lockers i { position:relative;width:43px;height:245px;border:3px solid #744528;border-radius:3px;background:linear-gradient(90deg,#a63d31,#c55543 55%,#8e3028);box-shadow:inset 0 0 0 2px rgba(255,215,126,.18); }
+.hallway-lockers i:before { content:'';position:absolute;left:10px;right:10px;top:28px;height:21px;border-block:4px double rgba(72,32,21,.5); }
+.hallway-lockers i:after { content:'';position:absolute;right:7px;top:107px;width:4px;height:15px;border-radius:3px;background:#f1ce76;box-shadow:0 0 0 2px #63391f; }
+.school-lobby-sign { position:relative;z-index:2;display:grid;width:min(610px,84vw);grid-template-columns:78px 1fr;grid-template-rows:auto auto auto;align-items:center;margin:0 auto;padding:12px 25px 12px 17px;color:#fff3cd;background:linear-gradient(145deg,#174b36,#0c3021);border:4px solid #704126;border-radius:8px;box-shadow:0 0 0 4px #e1b249,0 10px 0 rgba(77,42,23,.25),0 18px 34px rgba(67,39,22,.2);text-align:left; }
+.school-lobby-sign .school-crest { grid-row:1/4;width:61px;height:61px;margin-right:15px; }
+.school-lobby-sign>span { color:#e7c466;font-size:7px;font-weight:900;letter-spacing:2px; }
+.school-lobby-sign h1 { margin:2px 0 0;color:#fff7dc;font:700 clamp(24px,3.2vw,37px)/1 'Fraunces',serif; }
+.school-lobby-sign p { margin:4px 0 0;color:#cbdcca;font-size:10px;letter-spacing:1.2px;text-transform:uppercase; }
+.pick-table-heading { position:relative;z-index:2;max-width:650px;margin:28px auto 17px;text-align:center; }
+.pick-table-heading>span { color:#a43c31;font-size:8px;font-weight:900;letter-spacing:2.4px; }
+.pick-table-heading h2 { margin:4px 0 5px;color:#173d2d;font:700 clamp(34px,4.4vw,52px)/1 'Fraunces',serif; }
+.pick-table-heading p { margin:0;color:#657168;font-size:11px; }
+.lobby-table-grid { position:relative;z-index:3;display:grid;grid-template-columns:repeat(2,minmax(0,355px));justify-content:center;gap:22px;max-width:760px;margin:0 auto; }
+.lobby-table-card { position:relative;display:flex;min-height:300px;flex-direction:column;align-items:center;padding:13px 17px 17px;overflow:hidden;border:3px solid #674027;border-bottom-width:7px;border-radius:13px;color:#fff3d1;background:linear-gradient(150deg,#194d37,#09291b);box-shadow:0 0 0 3px #e0b04a,0 13px 20px rgba(61,34,19,.29);text-align:center;transition:transform .2s ease,filter .2s ease,box-shadow .2s ease; }
+.lobby-table-card:before { content:'';position:absolute;inset:0;background:linear-gradient(125deg,rgba(255,255,255,.08),transparent 34%),repeating-linear-gradient(135deg,transparent 0 12px,rgba(239,202,103,.025) 12px 14px);pointer-events:none; }
+.lobby-table-card:hover,.lobby-table-card:focus-visible { transform:translateY(-7px) scale(1.015);filter:brightness(1.08);box-shadow:0 0 0 3px #f2ca64,0 20px 26px rgba(61,34,19,.36); }
+.lobby-table-card:active { transform:translateY(1px); }
+.rush-lobby-table { background:radial-gradient(circle at 50% 34%,rgba(215,48,60,.34),transparent 34%),linear-gradient(145deg,#671f2a,#281219 50%,#0b3022); }
+.room-door-number { align-self:stretch;padding-bottom:8px;border-bottom:1px solid rgba(245,211,123,.25);color:#efcc6a;font-size:7px;font-weight:900;letter-spacing:1.8px; }
+.table-preview { position:relative;display:grid;width:210px;height:132px;flex:none;place-items:center;margin:7px 0 5px;overflow:hidden;border:5px solid #704126;border-top-width:12px;border-radius:7px 7px 3px 3px;background:radial-gradient(circle at 50% 25%,rgba(45,119,80,.42),transparent 38%),linear-gradient(#123c2c,#061e15);box-shadow:0 0 0 2px #dfad43,inset 0 0 24px rgba(0,0,0,.72),0 8px 11px rgba(0,0,0,.3);perspective:500px; }
+.table-preview:before { content:'';position:absolute;left:13px;right:13px;top:24px;bottom:5px;border:5px solid #e9c45f;border-radius:50%;background:radial-gradient(circle,#1d6b49 0 45%,#0a3d29 70%);box-shadow:0 0 0 5px #59321c,0 0 0 8px #b9822d,0 14px 12px rgba(0,0,0,.48),inset 0 -13px 20px rgba(0,0,0,.34);transform:rotateX(58deg); }
+.table-preview:after { content:'DA MYSTRO CLASSROOM';position:absolute;left:50%;top:3px;transform:translateX(-50%);color:#f0cf72;font-size:5px;font-weight:900;letter-spacing:1.3px;white-space:nowrap; }
+.rush-lobby-table .table-preview:before { background:radial-gradient(circle,#8e2633 0 23%,#174f38 24% 67%,#0b2c20 68%); }
+.preview-ring { position:absolute;left:50%;top:50%;width:1px;height:1px;transform:translateY(-4px) rotateX(58deg);transform-style:preserve-3d; }
+.preview-ring b { --preview-angle:calc(var(--preview-card) * 25.714deg);position:absolute;left:-6px;top:-10px;width:12px;height:20px;border:1px solid #f1ce75;border-radius:2px;background:#0a3d2a;box-shadow:inset 0 0 0 2px #1e6c4a;transform:rotate(var(--preview-angle)) translateY(-44px);transform-origin:6px 54px; }
+.table-preview em { position:relative;z-index:2;color:rgba(255,232,158,.8);font:800 15px 'Fraunces',serif;font-style:normal;letter-spacing:1px;transform:translateY(4px); }
+.table-preview u { position:absolute;z-index:3;right:24px;top:19px;color:#ffdc68;text-decoration:none;text-shadow:0 2px 0 #5c201f; }
+.lobby-table-card>strong { color:#fff3c7;font:700 22px 'Fraunces',serif; }
+.lobby-table-card>small { min-height:32px;margin-top:5px;color:#d2ddd2;font-size:10px;line-height:1.45; }
+.enter-table-label { display:flex;width:100%;align-items:center;justify-content:center;gap:12px;margin-top:auto;padding-top:12px;border-top:1px solid rgba(244,210,117,.22);color:#f1cc6c;font-size:8px;font-weight:900;letter-spacing:1.5px; }
+.enter-table-label b { font-size:16px; }
+.lobby-resume-button { position:relative;z-index:3;display:grid;width:min(500px,90vw);grid-template-columns:32px 1fr;grid-template-rows:auto auto;align-items:center;margin:19px auto 0;padding:10px 16px;border:1px solid #b28a48;border-radius:8px;color:#294034;background:#fff5d8;box-shadow:0 4px 0 rgba(102,61,32,.2);text-align:left; }
+.lobby-resume-button>span { grid-row:1/3;font-size:23px; }
+.lobby-resume-button b { font:700 13px 'Fraunces',serif; }
+.lobby-resume-button small { color:#7a8078;font-size:8px; }
+.lobby-help-links { position:relative;z-index:3;display:flex;align-items:center;justify-content:center;gap:13px;margin-top:18px; }
+.lobby-help-links button { padding:4px;border:0;color:#603c28;background:transparent;font-size:9px;font-weight:900;letter-spacing:1px;text-transform:uppercase; }
+.lobby-help-links button:hover { color:#a53b31;text-decoration:underline; }
+.lobby-help-links i { color:#c0923a; }
+.hallway-floor { position:absolute;z-index:0;left:0;right:0;bottom:0;height:36%;overflow:hidden;background:repeating-linear-gradient(90deg,transparent 0 79px,rgba(44,25,15,.22) 80px 82px),repeating-linear-gradient(0deg,transparent 0 45px,rgba(44,25,15,.18) 46px 48px);clip-path:polygon(0 34%,100% 34%,100% 100%,0 100%);pointer-events:none; }
+.hallway-floor:after { content:'';position:absolute;left:50%;top:0;width:2px;height:140%;background:rgba(45,25,14,.22);box-shadow:-350px 0 0 rgba(45,25,14,.13),350px 0 0 rgba(45,25,14,.13);transform:perspective(300px) rotateX(58deg); }
+.selected-room-ticket { display:flex;max-width:690px;align-items:center;gap:14px;margin:23px 0 30px;padding:13px 16px;border:2px solid #c99d3d;border-left:8px solid #1e6648;border-radius:7px;color:#26392f;background:#fff4d4;box-shadow:0 5px 0 rgba(103,65,34,.16); }
+.selected-room-ticket>span { font-size:28px; }
+.selected-room-ticket div { display:flex;min-width:0;flex:1;flex-direction:column; }
+.selected-room-ticket b { font-size:9px;letter-spacing:1.3px; }
+.selected-room-ticket small { margin-top:3px;color:#68746d;font-size:10px; }
+.selected-room-ticket>i { padding:5px 8px;border-radius:3px;color:#fff5d7;background:#216146;font-size:7px;font-style:normal;font-weight:900;letter-spacing:1px; }
+.selected-room-ticket.rush-ticket { border-left-color:#a72f3b; }.selected-room-ticket.rush-ticket>i { background:#9b2e39; }
+
+@media (max-width:760px) {
+  .school-lobby-screen,.school-hallway { min-height:calc(100svh - 68px); }
+  .school-hallway { padding:24px 16px 40px;overflow-y:auto; }
+  .hallway-lights { width:80vw; }.hallway-lights i { width:62px;height:10px; }
+  .hallway-lockers { top:16%;opacity:.23; }.hallway-lockers i { width:32px;height:210px; }
+  .school-lobby-sign { width:min(92vw,520px);grid-template-columns:58px 1fr;padding:10px 14px; }
+  .school-lobby-sign .school-crest { width:46px;height:46px; }
+  .school-lobby-sign h1 { font-size:clamp(21px,6.2vw,29px); }
+  .school-lobby-sign p { font-size:7px; }
+  .pick-table-heading { margin:24px auto 15px; }
+  .pick-table-heading h2 { font-size:39px; }
+  .pick-table-heading p { max-width:330px;margin-inline:auto;font-size:10px;line-height:1.45; }
+  .lobby-table-grid { grid-template-columns:minmax(0,360px);gap:17px; }
+  .lobby-table-card { min-height:275px;padding-inline:15px; }
+  .table-preview { height:113px; }
+  .table-preview:before { top:19px;bottom:3px; }
+  .preview-ring { transform:translateY(-5px) rotateX(58deg); }
+  .preview-ring b { transform:rotate(var(--preview-angle)) translateY(-39px);transform-origin:6px 49px; }
+  .lobby-help-links { margin-bottom:12px; }
+  .hallway-floor { position:fixed;height:28%;opacity:.55; }
+  .selected-room-ticket { margin-bottom:22px; }
+}
+
+@media (max-width:390px) {
+  .school-lobby-sign>span { letter-spacing:1.3px; }
+  .school-lobby-sign h1 { font-size:20px; }
+  .school-lobby-sign p { letter-spacing:.7px; }
+  .lobby-table-card { min-height:264px; }
+  .lobby-table-card>strong { font-size:20px; }
+}

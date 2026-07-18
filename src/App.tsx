@@ -66,6 +66,7 @@ export default function App() {
   }, [game, screen, paused, sound]);
 
   const startGame = () => { if (getUsernameError(settings.playerName)) return; const readySettings = { ...settings, playerName: normalizeUsername(settings.playerName) }; setSettings(readySettings); const next = createInitialGame(readySettings); clearGame(); setGame(next); setScreen('game'); setSelectedMiddleIds([]); setShowTutorial(readySettings.hints); setNotice(''); };
+  const chooseTable = (room: MatchSettings['room']) => { setSettings((current) => ({ ...current, room, turnSeconds: room === 'rush' ? 10 : 20 })); setScreen('setup'); };
   const resumeGame = () => { const restored = loadGame(); if (restored) { setGame(restored); setScreen('game'); setNotice('Match restored'); } };
   const handleDraw = (id: string) => { if (!game) return; setGame(drawCard(game, id)); setSelectedMiddleIds([]); setNotice(''); sound('draw'); };
   const toggleMiddle = (id: string) => { setSelectedMiddleIds((ids) => ids.includes(id) ? ids.filter((item) => item !== id) : [...ids, id]); setNotice(''); };
@@ -79,7 +80,7 @@ export default function App() {
 
   return <div className="app-shell">
     {screen !== 'game' && <Header onHome={() => setScreen('menu')} />}
-    {screen === 'menu' && <Menu onPlay={() => setScreen('setup')} onRules={() => setScreen('rules')} onCredits={() => setScreen('credits')} canResume={!!savedGame} onResume={resumeGame} />}
+    {screen === 'menu' && <Menu onChooseTable={chooseTable} onRules={() => setScreen('rules')} onCredits={() => setScreen('credits')} canResume={!!savedGame} onResume={resumeGame} />}
     {screen === 'setup' && <Setup settings={settings} setSettings={setSettings} onStart={startGame} onBack={() => setScreen('menu')} />}
     {screen === 'rules' && <Rules onBack={() => setScreen('menu')} />}
     {screen === 'credits' && <Credits onBack={() => setScreen('menu')} />}
@@ -96,27 +97,39 @@ function SchoolCrest({ small = false }: { small?: boolean }) {
 
 function Header({ onHome }: { onHome: () => void }) { return <header className="site-header school-site-header"><button className="school-home-button" onClick={onHome} aria-label="Da Mystro Elementary School home"><SchoolCrest small /><span><strong>Da Mystro</strong><small>ELEMENTARY SCHOOL</small></span></button><div className="school-header-note"><span>STUDENT GAME PORTAL</span><i /><i /><i /></div></header>; }
 
-function Menu({ onPlay, onRules, onCredits, canResume, onResume }: { onPlay: () => void; onRules: () => void; onCredits: () => void; canResume: boolean; onResume: () => void }) {
-  return <main className="school-start-screen">
-    <section className="school-welcome">
-      <div className="school-welcome-copy"><span className="school-kicker">WELCOME TO</span><h1>Da Mystro<span>Elementary School</span></h1><p>Where bright minds gather, cultures are celebrated, and every lesson becomes an adventure.</p><div className="school-motto"><i>LEARN</i><b>•</b><i>PLAY</i><b>•</b><i>GROW</i></div><button className="school-hero-cta" onClick={onPlay}>Enter the Injera Be Wat Classroom <span>→</span></button></div>
-      <div className="dm-royal-crest"><img src={DM_LOGO} alt="Da Mystro Gamings royal lion crest" /></div>
-    </section>
-    <section className="school-entry-panel">
-      <div className="classroom-window" aria-hidden="true"><span>ROOM 8</span><div className="window-board"><small>TODAY'S LESSON</small><b>3 + 5 = 8</b><i>LOOK TWICE!</i></div><div className="window-desk"><i /><i /><i /></div></div>
-      <article className="featured-classroom"><span className="class-label">MATH &amp; STRATEGY LAB · LESSON 01</span><div className="game-title-lockup"><span className="mini-game-mark">IBW</span><div><h2>Injera Be Wat</h2><p>ADD · MATCH · THINK FAST</p></div></div><p className="class-description">Take your seat at the blackboard table. Add numbers, spot matches, outthink Teacher Mesob, and watch for the Jokers.</p><div className="class-details"><span><b>SUBJECT</b>Math &amp; Strategy</span><span><b>TEACHER</b>Teacher Mesob</span><span><b>PLAYERS</b>2–4 students</span></div><div className="school-actions"><button className="primary-button school-enter-button" onClick={onPlay}>Enter Classroom <span>→</span></button>{canResume && <button className="secondary-button school-resume-button" onClick={onResume}>Resume My Lesson</button>}</div></article>
-      <aside className="school-notice-board"><span>FRONT OFFICE</span><h3>Student Resources</h3><button onClick={onRules}><b>01</b><span>How to Play<small>Read the classroom rules</small></span><i>→</i></button><button onClick={onCredits}><b>02</b><span>School Credits<small>Meet the game makers</small></span><i>→</i></button><p>“Every great player starts as a curious student.”</p></aside>
+function Menu({ onChooseTable, onRules, onCredits, canResume, onResume }: { onChooseTable: (room: MatchSettings['room']) => void; onRules: () => void; onCredits: () => void; canResume: boolean; onResume: () => void }) {
+  return <main className="school-start-screen school-lobby-screen">
+    <section className="school-hallway">
+      <div className="hallway-lights" aria-hidden="true"><i /><i /><i /></div>
+      <div className="hallway-lockers hallway-lockers-left" aria-hidden="true"><i /><i /><i /></div>
+      <div className="hallway-lockers hallway-lockers-right" aria-hidden="true"><i /><i /><i /></div>
+      <div className="school-lobby-sign"><SchoolCrest /><span>YOU'VE WALKED INTO</span><h1>Da Mystro Elementary</h1><p>Math &amp; Strategy Game Hall</p></div>
+      <div className="pick-table-heading"><span>WELCOME, STUDENT</span><h2>Choose a classroom</h2><p>Each classroom has its own Injera Be Wat table. Pick the room where you want to play.</p></div>
+      <div className="lobby-table-grid" role="group" aria-label="Choose a game classroom">
+        <button className="lobby-table-card classic-lobby-table" onClick={() => onChooseTable('classic')}>
+          <span className="room-door-number">CLASSROOM 8 · ORIGINAL</span>
+          <span className="table-preview" aria-hidden="true"><i className="preview-ring">{Array.from({ length: 14 }, (_, index) => <b key={index} style={{ '--preview-card': index } as React.CSSProperties} />)}</i><em>IBW</em></span>
+          <strong>Original Classroom</strong><small>Enter the emerald classroom and choose any face-down card from the Circle.</small><span className="enter-table-label">ENTER CLASSROOM <b>→</b></span>
+        </button>
+        <button className="lobby-table-card rush-lobby-table" onClick={() => onChooseTable('rush')}>
+          <span className="room-door-number">CLASSROOM 9 · RUSH</span>
+          <span className="table-preview" aria-hidden="true"><i className="preview-ring">{Array.from({ length: 14 }, (_, index) => <b key={index} style={{ '--preview-card': index } as React.CSSProperties} />)}</i><em>SPIN</em><u>◆</u></span>
+          <strong>Rush &amp; Roulette Classroom</strong><small>Enter the high-energy classroom, spin the table, and let the Circle choose.</small><span className="enter-table-label">ENTER CLASSROOM <b>→</b></span>
+        </button>
+      </div>
+      {canResume && <button className="lobby-resume-button" onClick={onResume}><span>↻</span><b>Resume the game already at your desk</b><small>Your saved match is waiting.</small></button>}
+      <div className="lobby-help-links"><button onClick={onRules}>How to Play</button><i>•</i><button onClick={onCredits}>School Credits</button></div>
+      <div className="hallway-floor" aria-hidden="true" />
     </section>
   </main>;
 }
 
 function Setup({ settings, setSettings, onStart, onBack }: { settings: MatchSettings; setSettings: (settings: MatchSettings) => void; onStart: () => void; onBack: () => void }) {
   const update = <K extends keyof MatchSettings>(key: K, value: MatchSettings[K]) => setSettings({ ...settings, [key]: value });
-  const chooseRoom = (room: MatchSettings['room']) => setSettings({ ...settings, room, turnSeconds: room === 'rush' ? 10 : 20 });
   const usernameError = getUsernameError(settings.playerName);
   return <main className="content-page setup-page">
-    <button className="back-button" onClick={onBack}>← Back</button><span className="eyebrow">MATCH SETUP</span><h1>Choose your game room</h1><p className="lede">Both rooms use the same two-deck Add &amp; Match rules. Rush &amp; Roulette adds a player-controlled spinning Circle.</p>
-    <div className="room-selector" role="group" aria-label="Game room"><button type="button" className={settings.room === 'classic' ? 'active' : ''} onClick={() => chooseRoom('classic')}><b>🦁 Royal Classroom</b><span>The classic emerald strategy table.</span></button><button type="button" className={settings.room === 'rush' ? 'active rush-choice' : 'rush-choice'} onClick={() => chooseRoom('rush')}><b>🎡 Rush &amp; Roulette</b><span>Spin the Circle before choosing a card.</span></button></div>
+    <button className="back-button" onClick={onBack}>← Choose another classroom</button><span className="eyebrow">YOUR CLASSROOM IS READY</span><h1>{settings.room === 'rush' ? 'Rush & Roulette Classroom' : 'Original Injera Be Wat Classroom'}</h1><p className="lede">Create your student seat, choose your classmates, and begin the lesson.</p>
+    <div className={`selected-room-ticket ${settings.room === 'rush' ? 'rush-ticket' : ''}`}><span>{settings.room === 'rush' ? '🎡' : '🦁'}</span><div><b>{settings.room === 'rush' ? 'CLASSROOM 9 · SPIN TABLE' : 'CLASSROOM 8 · CLASSIC TABLE'}</b><small>{settings.room === 'rush' ? 'The Circle spins before every draw.' : 'Choose any face-down card from the Circle.'}</small></div><i>SELECTED</i></div>
     <div className="setup-grid"><section className="panel"><h2>Players</h2><label className={`field username-field ${usernameError ? 'field-error' : ''}`}><span>Create your username</span><input value={settings.playerName} minLength={3} maxLength={18} autoComplete="username" autoCapitalize="none" spellCheck={false} aria-invalid={!!usernameError} aria-describedby="username-help" placeholder="Example: AddisAce" onChange={(e) => update('playerName', e.target.value)} /><small id="username-help" className="username-help">{usernameError || 'Only this username will appear to other players.'}</small></label><fieldset><legend>Total players</legend><div className="segment">{([2, 3, 4] as const).map((count) => <button type="button" className={settings.playerCount === count ? 'active' : ''} onClick={() => update('playerCount', count)} key={count}>{count}</button>)}</div></fieldset><fieldset><legend>AI difficulty</legend><div className="segment">{(['easy', 'medium', 'hard'] as const).map((level) => <button type="button" className={settings.difficulty === level ? 'active' : ''} onClick={() => update('difficulty', level)} key={level}>{level}</button>)}</div></fieldset></section><section className="panel"><h2>Table preferences</h2><fieldset className="timer-setting"><legend>Turn timer</legend><div className="segment">{([10, 15, 20, 30] as const).map((seconds) => <button type="button" className={settings.turnSeconds === seconds ? 'active' : ''} onClick={() => update('turnSeconds', seconds)} key={seconds}>{seconds}s</button>)}</div><small>{settings.room === 'rush' ? '10 seconds keeps Rush fast.' : '20 seconds is recommended for classroom math.'}</small></fieldset><Toggle checked={settings.sound} onChange={(v) => update('sound', v)} label="Sound" description="Original synthesized table cues" /><Toggle checked={settings.hints} onChange={(v) => update('hints', v)} label="Tutorial hints" description="Show the playable tour when the match begins" /><Toggle checked={settings.reduceMotion} onChange={(v) => update('reduceMotion', v)} label="Reduce motion" description="Minimize card movement and celebration" /></section></div>
     <button className="primary-button large start-button" disabled={!!usernameError} onClick={onStart}>Enter {settings.room === 'rush' ? 'Rush & Roulette' : 'Royal Classroom'} <span>→</span></button>
   </main>;
